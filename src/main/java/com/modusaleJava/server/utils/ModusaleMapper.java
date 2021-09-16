@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 public class ModusaleMapper {
     private ObjectMapper mapper=new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
 
-    public <T,E> E jsonToObj(String obj, Class<E> tClass){
+    public <E> E jsonToObj(String obj, Class<E> tClass){
         try {
             E retObj=mapper.readValue(obj, tClass);
             return retObj;
