@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 public class ModusaleAppData {
     private String appName;
     private String brandName;
-    private Integer price;
+    private String price;
     private String brandScheme;
+    private String id;
+    private String imagePath;
 }

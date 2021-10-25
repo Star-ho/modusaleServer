@@ -1,5 +1,6 @@
 package com.modusaleJava.server.web;
 
+import com.modusaleJava.server.ModusaleBatch;
 import com.modusaleJava.server.service.MainService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,12 @@ import java.util.Map;
 public class MainController {
 
     private MainService mainService;
+    private ModusaleBatch modusaleBatch;
 
+    @Autowired
+    public void setModusaleBatch(ModusaleBatch modusaleBatch) {
+        this.modusaleBatch = modusaleBatch;
+    }
     @Autowired
     public void setMainService(MainService mainService) {
         this.mainService = mainService;
@@ -28,7 +34,7 @@ public class MainController {
 
     @GetMapping("refresh")
     public String refreshData(){
-        mainService.refresh();
+        modusaleBatch.consume();
         return "refresh!";
     }
 }

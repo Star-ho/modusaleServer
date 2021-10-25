@@ -10,6 +10,12 @@ plugins {
     id 'java'
 }
 
+bootJar{
+    archivesBaseName = 'server'
+    archiveFileName = 'server.jar'
+    archiveVersion = "0.0.0"
+}
+
 //spring cloude option below 6 line
 apply plugin: "io.spring.dependency-management"
 dependencyManagement {
@@ -37,16 +43,15 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.kafka:spring-kafka'
-//    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     compileOnly 'org.projectlombok:lombok'
+    implementation 'com.h2database:h2:1.4.197'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
     testImplementation 'io.projectreactor:reactor-test'
     implementation('org.jsoup:jsoup:1.13.1')
-
 }
 
 test {
