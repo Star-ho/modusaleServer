@@ -7,6 +7,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+/**
+ * sudo java -jar modusaleBuild/server.jar > log &
+ * disown -a
+ * ssh -i "starho_key.pem" ubuntu@ec2-3-35-173-138.ap-northeast-2.compute.amazonaws.com
+ */
 
 @SpringBootApplication
 @EnableScheduling
@@ -23,7 +28,7 @@ public class ServerApplication {
     }
 
     @Bean
-    public CommandLineRunner dataLoader(){//공휴일 리스트 초기화
+    public CommandLineRunner dataLoader(){
         return new CommandLineRunner() {
             @Override
             public void run(String... args) {

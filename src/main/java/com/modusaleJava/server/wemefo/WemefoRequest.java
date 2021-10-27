@@ -88,6 +88,7 @@ public class WemefoRequest{
             List<String> elementURIList=null;
             if(elementString.contains("a href")){
                 String[] splitedElementSting=elementString.split("\"");
+                splitedElementSting[1]=splitedElementSting[1].replace("&amp;","&");
                 if(elementString.contains("data-filename")){
                     elementURIList=Arrays.asList(splitedElementSting[1],splitedElementSting[3],splitedElementSting[7]);
                 }else{
