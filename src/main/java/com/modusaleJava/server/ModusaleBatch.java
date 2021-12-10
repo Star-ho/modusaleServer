@@ -74,16 +74,26 @@ public class ModusaleBatch {
 
 
     @Scheduled(fixedDelay = 1000*60*5)
-    public void fiveMinbatch(){
-        baeminYogiyoCoupangBatch(false);
+    public void fiveMinBatch(){
+        try {
+            baeminYogiyoCoupangBatch(false);
+        }catch (Exception e){
+            telegramAPI.send(e.getMessage());
+        }
+
     }
 
 
     @Scheduled(cron = "* 2,32 * * * *")// 매 정각, 30분마다
-    public void thirtyminBatch() throws InterruptedException {
-        wemefBatch();
-        sleep(1000*60*1);
-    }
+    public void thirtyminBatch() {
+        try {
+            wemefBatch();
+            sleep(1000 * 60 * 1);
+        }catch (Exception e){
+            telegramAPI.send(e.getMessage());
+        }
+
+}
 
     @Scheduled(fixedDelay = 1000*60*60*2)
     public void twoHourBatch(){

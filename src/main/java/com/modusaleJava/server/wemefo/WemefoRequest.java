@@ -82,15 +82,19 @@ public class WemefoRequest{
         while(pTagElement.get(0).toString().contains("data-filename")==false){//쓸모없는거 날리기
             pTagElement=pTagElement.next();
         }
-
         List<List<String>> wemefBannerList = Arrays.stream(pTagElement.toArray()).map(element->{
             String elementString=element.toString();
             List<String> elementURIList=null;
+
             if(elementString.contains("a href")){
                 String[] splitedElementSting=elementString.split("\"");
                 splitedElementSting[1]=splitedElementSting[1].replace("&amp;","&");
                 if(elementString.contains("data-filename")){
-                    elementURIList=Arrays.asList(splitedElementSting[1],splitedElementSting[3],splitedElementSting[7]);
+                    if(splitedElementSting[3].startsWith("http")&&splitedElementSting.length>5){
+                        elementURIList=Arrays.asList(splitedElementSting[1],splitedElementSting[3],splitedElementSting[7]);
+                    }else {
+                        elementURIList=Arrays.asList(splitedElementSting[1],splitedElementSting[5],splitedElementSting[9]);
+                    }
                 }else{
                     elementURIList=Arrays.asList(splitedElementSting[1],splitedElementSting[3]);
                 }
@@ -165,12 +169,12 @@ public class WemefoRequest{
         if(count>6){
             for(int i=0;i<8;i++)telegramAPI.send("wemefOchange!!");
         }
-        wemefAppDataList.sort(new Comparator<ModusaleAppData>() {
-            @Override
-            public int compare(ModusaleAppData o1, ModusaleAppData o2) {
-                return o1.getBrandName().compareTo(o2.getBrandName());
-            }
-        });
+//        wemefAppDataList.sort(new Comparator<ModusaleAppData>() {
+//            @Override
+//            public int compare(ModusaleAppData o1, ModusaleAppData o2) {
+//                return o1.getBrandName().compareTo(o2.getBrandName());
+//            }
+//        });
         return wemefAppDataList;
     }
 }
