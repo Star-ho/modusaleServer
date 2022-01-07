@@ -4,6 +4,7 @@ import com.modusaleJava.server.baemin.BaeminRequest;
 import com.modusaleJava.server.coupang.CoupangRequest;
 import com.modusaleJava.server.service.ImageService;
 import com.modusaleJava.server.service.MainService;
+import com.modusaleJava.server.service.TodayService;
 import com.modusaleJava.server.utils.GitHubData;
 import com.modusaleJava.server.utils.TelegramAPI;
 import com.modusaleJava.server.wemefo.WemefoRequest;
@@ -30,6 +31,10 @@ public class ModusaleBatch {
     private GitHubData gitHubData;
     private ImageService imageService;
     private MainService mainService;
+    private TodayService todayService;
+
+    @Autowired
+    private void setTodayService(TodayService todayService){this.todayService=todayService;}
 
     @Autowired
     private void setImageService(ImageService imageService){
@@ -75,23 +80,15 @@ public class ModusaleBatch {
 
     @Scheduled(fixedDelay = 1000*60*5)
     public void fiveMinBatch(){
-        try {
-            baeminYogiyoCoupangBatch(false);
-        }catch (Exception e){
-            telegramAPI.send(e.getMessage());
-        }
-
+        baeminYogiyoCoupangBatch(false);
     }
 
 
     @Scheduled(cron = "* 2,32 * * * *")// 매 정각, 30분마다
-    public void thirtyminBatch() {
-        try {
+    public void thirtyminBatch() throws InterruptedException {
+
             wemefBatch();
             sleep(1000 * 60 * 1);
-        }catch (Exception e){
-            telegramAPI.send(e.getMessage());
-        }
 
 }
 
@@ -106,7 +103,11 @@ public class ModusaleBatch {
     }
 
     public void wemefBatch() {
-        List<ModusaleAppData> wemefDataList = wemefoRequest.getWemefOData();
+        try {
+            List<ModusaleAppData> wemefDataList = wemefoRequest.getWemefOData();
+        }catch (Exception e){
+            telegramAPI.send("wemef error!!!\n"+e.getMessage());
+        }
 //        System.out.println(new Date()+"wemef!");
         if (wemefDataList.toString().equals(this.wemefDataList.toString()) == false) {
             this.wemefDataList = wemefDataList;
@@ -115,9 +116,25 @@ public class ModusaleBatch {
     }
 
     public void baeminYogiyoCoupangBatch(boolean flag){
-        List<ModusaleAppData> yogiyoDataList = yogiyoRequest.getAppData();
-        List<ModusaleAppData> baeminDataList = baeminRequest.getAppData();
-        List<ModusaleAppData> coupangDataList= coupangRequest.getAppData();
+        List<ModusaleAppData> coupangDataList= new ArrayList<>();
+        List<ModusaleAppData> yogiyoDataList =new ArrayList<>();
+        List<ModusaleAppData> baeminDataList =new ArrayList<>();
+
+        try{
+            yogiyoDataList = yogiyoRequest.getAppData();
+        }catch (Exception e){
+            telegramAPI.send("yogiyo error!!!\n"+e.getMessage());
+        }
+        try {
+            baeminDataList = baeminRequest.getAppData();
+        }catch (Exception e){
+            telegramAPI.send("baemin error!!!\n"+e.getMessage());
+        }
+        try{
+            coupangDataList = coupangRequest.getAppData();
+        }catch (Exception e){
+            telegramAPI.send("coupang error!!!\n"+e.getMessage());
+        }
 
         if(baeminDataList.toString().equals(this.baeminDataList.toString())==false){
             this.baeminDataList =baeminDataList;
@@ -158,13 +175,14 @@ public class ModusaleBatch {
                 retList.put("" + i, Arrays.asList(data.getBrandName(), data.getAppName(), "undefiend.png", "없음", data.getPrice(), data.getBrandScheme()));
             }
         }
-        makeAndSendImageList();
+        makeImageListAndTodaySale(retList);
         mainService.consume(retList);
     }
 
-    private void makeAndSendImageList(){
+    private void makeImageListAndTodaySale(Map<String, List<String>> retList){
         LinkedHashMap<String,String> imgMap= coupangRequest.getCoupangBannerList();
         imgMap.putAll(wemefoRequest.getWemefBannerList());
         imageService.consume(imgMap);
+        todayService.consume(retList);
     }
 }

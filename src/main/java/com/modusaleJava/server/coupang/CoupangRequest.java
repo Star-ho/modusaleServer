@@ -63,8 +63,9 @@ public class CoupangRequest extends RequestTemplate {
         Map<String,List<String>> monthlyItemFromGithub= gitHubData.getCouapngMonthlyMap();
         for(CoupangJSON_6 banner:coupangBannerList){
             String monthBannerScheme=banner.getScheme();
-            List<CoupangImageJSON_2> monthlyItmes=getMonthlyMenu(banner,monthBannerScheme);
-            if(monthlyItmes==null){
+            List<CoupangImageJSON_2> monthlyItems = getMonthlyMenu(banner, monthBannerScheme);
+
+            if(monthlyItems==null){
                 if (itemFromGithub.get(banner.getId()) != null) {
                     if(itemFromGithub.get(banner.getId()).get(0).equals("no")==false) {
                         for(int i=0;i<itemFromGithub.get(banner.getId()).size();i+=2) {
@@ -81,7 +82,7 @@ public class CoupangRequest extends RequestTemplate {
                     telegramAPI.send(alertMsg + "insert no refer!\n" + banner.getId() + "\n" + banner.getImagePath() + "\n" + banner.getScheme() + "\n");
                 }
             }else{
-                for(CoupangImageJSON_2 monthlyItem : monthlyItmes){
+                for(CoupangImageJSON_2 monthlyItem : monthlyItems){
                     if(monthlyItem.getScheme()!=null){
                         monthlyItem.setScheme("coupang"+monthlyItem.getScheme());
                         if(monthlyItemFromGithub.get(monthlyItem.getScheme())!=null) {
@@ -120,7 +121,8 @@ public class CoupangRequest extends RequestTemplate {
         List<CoupangJSON_6> coupangBannerList= getBanner();
         for(CoupangJSON_6 banner:coupangBannerList){
             String monthBannerScheme=banner.getScheme();
-            List<CoupangImageJSON_2> monthlyMenu=getMonthlyMenu(banner,monthBannerScheme);
+            List<CoupangImageJSON_2> monthlyMenu = getMonthlyMenu(banner,monthBannerScheme);
+
             if(monthlyMenu==null){
                 imageBannerMap.put(banner.getId(),banner.getImagePath());
             }else{
@@ -145,9 +147,12 @@ public class CoupangRequest extends RequestTemplate {
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("MMM", Locale.ENGLISH);
         String mouthString=simpleDateFormat.format(new Date()).toUpperCase(Locale.ROOT);
         String lastMonthString=simpleDateFormat.format(new Date().getTime()-1000*60*60*24*10).toUpperCase(Locale.ROOT);
+        System.out.println(mounthBannerScheme);
+        if (banner.getScheme().startsWith("coupangeats://Referrer")) return null;
 
         if(mounthBannerScheme.length()>0){
             String imgURL=URLDecoder.decode(banner.getScheme().split("=")[1],StandardCharsets.US_ASCII);
+
             String keyParam="";
 
             String[] temp=imgURL.split("=");

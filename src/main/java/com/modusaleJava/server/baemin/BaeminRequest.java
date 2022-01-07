@@ -73,7 +73,7 @@ public class BaeminRequest extends RequestTemplate {
                             BaeminAppData baeminAppData = new BaeminAppData();//아래 4줄 함수로 만들어서 해야할지 고민
                             baeminAppData.setBrandName(resData.getBrandName());
                             baeminAppData.setPrice(resData.getMaxDiscountCouponPrice());
-                            baeminAppData.setBrandScheme(baeminSchemeHeader + resData.getBrandId());
+                            baeminAppData.setBrandScheme(baeminSchemeHeader + resData.getId());
                             baeminAppDataList.add(baeminAppData);
                         }
                     }
