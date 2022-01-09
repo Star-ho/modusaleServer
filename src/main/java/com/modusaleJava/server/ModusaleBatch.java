@@ -86,11 +86,9 @@ public class ModusaleBatch {
 
     @Scheduled(cron = "* 2,32 * * * *")// 매 정각, 30분마다
     public void thirtyminBatch() throws InterruptedException {
-
-            wemefBatch();
-            sleep(1000 * 60 * 1);
-
-}
+        wemefBatch();
+        sleep(1000 * 60 * 1);
+    }
 
     @Scheduled(fixedDelay = 1000*60*60*2)
     public void twoHourBatch(){
@@ -103,8 +101,9 @@ public class ModusaleBatch {
     }
 
     public void wemefBatch() {
+        List<ModusaleAppData> wemefDataList=new ArrayList<>();
         try {
-            List<ModusaleAppData> wemefDataList = wemefoRequest.getWemefOData();
+            wemefDataList = wemefoRequest.getWemefOData();
         }catch (Exception e){
             telegramAPI.send("wemef error!!!\n"+e.getMessage());
         }

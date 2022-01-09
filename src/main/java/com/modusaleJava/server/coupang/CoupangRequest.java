@@ -147,11 +147,14 @@ public class CoupangRequest extends RequestTemplate {
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("MMM", Locale.ENGLISH);
         String mouthString=simpleDateFormat.format(new Date()).toUpperCase(Locale.ROOT);
         String lastMonthString=simpleDateFormat.format(new Date().getTime()-1000*60*60*24*10).toUpperCase(Locale.ROOT);
-        System.out.println(mounthBannerScheme);
-        if (banner.getScheme().startsWith("coupangeats://Referrer")) return null;
 
         if(mounthBannerScheme.length()>0){
-            String imgURL=URLDecoder.decode(banner.getScheme().split("=")[1],StandardCharsets.US_ASCII);
+            String imgURL;
+            try {
+                imgURL=URLDecoder.decode(banner.getScheme().split("=")[1],StandardCharsets.US_ASCII);
+            }catch (Exception e){
+                return null;
+            }
 
             String keyParam="";
 
