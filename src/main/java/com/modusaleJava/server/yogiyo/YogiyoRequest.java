@@ -2,6 +2,7 @@ package com.modusaleJava.server.yogiyo;
 
 
 import com.modusaleJava.server.ModusaleAppData;
+import com.modusaleJava.server.utils.GpsData;
 import com.modusaleJava.server.utils.ModusaleRequestTemplate;
 import com.modusaleJava.server.utils.RequestTemplate;
 import com.modusaleJava.server.yogiyo.dto.YogiyoAppData;
@@ -38,15 +39,30 @@ public class YogiyoRequest extends RequestTemplate {
 
     @Override
     public List<ModusaleAppData> getAppData(){
-        List<ModusaleAppData> yogiyoAppDataList=new ArrayList<>();
         ArrayList<List<String>> locArr=locToArr(this.location);
+        List<String> urlList= getUrlList(locArr);
+        List<YogiyoResponseJSON> responseList=sendTo(urlList);
+        return removeDup(parseTo(responseList));
+    }
+
+    public List<ModusaleAppData> getAppDataByGps(GpsData gpsData){
+        List<String> urlArr=new ArrayList<>();
+        urlArr.add(String.format(this.URL,gpsData.getLongitude(),gpsData.getLatitude()));
+        List<YogiyoResponseJSON> responseList=sendTo(urlArr);
+        return removeDup(parseTo(responseList));
+    }
+
+    private List<String> getUrlList(ArrayList<List<String>> locArr){
         List<String> urlArr=new ArrayList<>();
         for(var loc:locArr){
             urlArr.add(String.format(this.URL,loc.get(1),loc.get(0)));
         }
-        List<YogiyoResponseJSON> responseList=null;
-        int i=0;
-        while (i<10) {
+        return urlArr;
+    }
+
+    private List<YogiyoResponseJSON> sendTo(List<String> urlArr){
+        List<YogiyoResponseJSON> responseList = null;
+        for (int i=0;i<10;) {
             try {
                 Flux<YogiyoResponseJSON> fluxList = Flux.just();
                 for (var url : urlArr) {
@@ -58,26 +74,8 @@ public class YogiyoRequest extends RequestTemplate {
                 System.out.println(e);
                 i++;
             }
-
         }
-
-        for(YogiyoResponseJSON response:responseList){
-            for(var item : response.getHotdeals().getItems()){
-                YogiyoAppData yogiyoAppData=new YogiyoAppData();
-                yogiyoAppData.setBrandName(item.getName());
-                yogiyoAppData.setPrice(item.getAdditional_discount());
-                yogiyoAppData.setBrandScheme("yogiyoapp://franchise?fr_id="+item.getFranchise_id());
-                yogiyoAppDataList.add(yogiyoAppData);
-            }
-        }
-        yogiyoAppDataList=yogiyoAppDataList.stream().distinct().collect(Collectors.toList());
-        yogiyoAppDataList.sort(new Comparator<ModusaleAppData>() {
-            @Override
-            public int compare(ModusaleAppData o1, ModusaleAppData o2) {
-                return o1.getBrandName().compareTo(o2.getBrandName());
-            }
-        });
-        return removeDup(yogiyoAppDataList);
+        return responseList;
     }
 
     private Flux<YogiyoResponseJSON> yogiyoRequest(String URL){
@@ -92,4 +90,22 @@ public class YogiyoRequest extends RequestTemplate {
         }
         return locArr;
     }
+
+    private List<ModusaleAppData> parseTo(List<YogiyoResponseJSON> responseList){
+        List<ModusaleAppData> yogiyoAppDataList=new ArrayList<>();
+
+        for(YogiyoResponseJSON response:responseList){
+            for(var item : response.getHotdeals().getItems()){
+                YogiyoAppData yogiyoAppData=new YogiyoAppData();
+                yogiyoAppData.setBrandName(item.getName());
+                yogiyoAppData.setPrice(item.getAdditional_discount());
+                yogiyoAppData.setBrandScheme("yogiyoapp://franchise?fr_id="+item.getFranchise_id());
+                yogiyoAppDataList.add(yogiyoAppData);
+            }
+        }
+        yogiyoAppDataList=yogiyoAppDataList.stream().distinct().collect(Collectors.toList());
+        yogiyoAppDataList.sort(Comparator.comparing(ModusaleAppData::getBrandName));
+        return yogiyoAppDataList;
+    }
+
 }

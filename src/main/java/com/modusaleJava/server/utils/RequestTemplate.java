@@ -15,12 +15,7 @@ abstract public class RequestTemplate {
              if(strMap.containsKey(dataList.get(i).getBrandName())){
                  for(int j=0;j<i;j++){
                      if(dataList.get(j).getBrandName().equals(dataList.get(i).getBrandName())){
-//                         System.out.println("duple!!"+dataList.get(j));
-                         if(Integer.parseInt( dataList.get(i).getPrice() )>Integer.parseInt( dataList.get(j).getPrice() )){
-                             dataList.remove(j);
-                         }else {
-                             dataList.remove(i);
-                         }
+                         dataList.remove(j);
                          i--;
                      }
                  }
@@ -30,6 +25,5 @@ abstract public class RequestTemplate {
          }
         return dataList;
      }
-
      abstract public <T extends ModusaleAppData> List<T> getAppData();
 }

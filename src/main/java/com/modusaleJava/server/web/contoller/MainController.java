@@ -1,13 +1,14 @@
-package com.modusaleJava.server.web;
+package com.modusaleJava.server.web.contoller;
 
 import com.modusaleJava.server.ModusaleBatch;
-import com.modusaleJava.server.service.ImageService;
-import com.modusaleJava.server.service.MainService;
-import com.modusaleJava.server.service.TodayService;
-import lombok.extern.slf4j.Slf4j;
+import com.modusaleJava.server.utils.GpsData;
+import com.modusaleJava.server.web.service.ImageService;
+import com.modusaleJava.server.web.service.MainService;
+import com.modusaleJava.server.web.service.TodayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,11 @@ public class MainController {
         return mainService.getData();
     }
 
+    @GetMapping("/getDataFromGps")
+    public Map<String, List<String>> getDataWithGPS(@RequestParam GpsData gpsData){
+        return mainService.getDataFrom(gpsData);
+    }
+
     @GetMapping("/refresh")
     public String refreshData(){
         modusaleBatch.consume();
@@ -54,6 +60,5 @@ public class MainController {
 
     @GetMapping("/todaySale")
     public String todaySale(){return todayService.showTodaySale(); }
-
 }
 

@@ -1,4 +1,4 @@
-package com.modusaleJava.server.service;
+package com.modusaleJava.server.web.service;
 
 import org.springframework.stereotype.Component;
 import java.util.*;

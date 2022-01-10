@@ -2,9 +2,9 @@ package com.modusaleJava.server;
 
 import com.modusaleJava.server.baemin.BaeminRequest;
 import com.modusaleJava.server.coupang.CoupangRequest;
-import com.modusaleJava.server.service.ImageService;
-import com.modusaleJava.server.service.MainService;
-import com.modusaleJava.server.service.TodayService;
+import com.modusaleJava.server.web.service.ImageService;
+import com.modusaleJava.server.web.service.MainService;
+import com.modusaleJava.server.web.service.TodayService;
 import com.modusaleJava.server.utils.GitHubData;
 import com.modusaleJava.server.utils.TelegramAPI;
 import com.modusaleJava.server.wemefo.WemefoRequest;
@@ -156,9 +156,9 @@ public class ModusaleBatch {
     private void mergeAndSend(){
         List<ModusaleAppData> modusaleDataList =new ArrayList<>();
         modusaleDataList.addAll(this.baeminDataList);
+        modusaleDataList.addAll(this.wemefDataList);
         modusaleDataList.addAll(this.yogiyoDataList);
         modusaleDataList.addAll(this.coupangDataList);
-        modusaleDataList.addAll(this.wemefDataList);
         Map<String,String > unifiedName =gitHubData.getUnifiedNameMap();
         Map<String,List<String>> cateMappingName=gitHubData.getCategoryMap();
         Map<String,List<String>> retList=new HashMap<>();

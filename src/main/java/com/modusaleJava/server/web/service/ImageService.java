@@ -1,9 +1,8 @@
-package com.modusaleJava.server.service;
+package com.modusaleJava.server.web.service;
 
 import com.modusaleJava.server.utils.ImgSourceToHTML;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.LinkedHashMap;
 
 @Service

@@ -28,6 +28,7 @@ public class CoupangRequest extends RequestTemplate {
         this.header = header;
     }
 
+    final String alertMsg="*********************\n";
     private ModusaleMapper modusaleMapper;
     private ModusaleRequestTemplate coupangRequest;
     private GitHubData gitHubData;
@@ -56,18 +57,45 @@ public class CoupangRequest extends RequestTemplate {
 
     @Override
     public List<ModusaleAppData> getAppData(){
-        final String alertMsg="*********************\n";
-        List<ModusaleAppData> coupangAppDataList=new ArrayList<>();
-        List<CoupangJSON_6> coupangBannerList= getBanner();
+        CoupangJSON_1 coupangJson= coupangRequest.getResponseDataClass(this.URL,this.header,CoupangJSON_1.class);
+        List<CoupangJSON_6> coupangBannerList = coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
+        return removeDup(parseTo(coupangBannerList));
+    }
+
+    public List<ModusaleAppData> getAppDataByGps(GpsData gps){
+        var gpsAppliedHeader= deepCloneheader();
+        gpsAppliedHeader.put("X-EATS-LOCATION", "{\"addressId\":0,\"latitude\":"+gps.getLatitude()+",\"longitude\":"+gps.getLongitude()+",\"regionId\":10,\"siDo\":\"%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C\",\"siGunGu\":\"%EC%A4%91%EA%B5%AC\"}");
+        CoupangJSON_1 coupangJson= coupangRequest.getResponseDataClass(this.URL,gpsAppliedHeader,CoupangJSON_1.class);
+        List<CoupangJSON_6> coupangBannerList = coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
+        return removeDup(parseTo(coupangBannerList));
+    }
+
+    private HashMap<String, String> deepCloneheader(){
+        var clonedHeader = new HashMap<String,String>();
+        for(var key : this.header.keySet()){
+            clonedHeader.put(key,this.header.get(key));
+        }
+        return clonedHeader;
+    }
+
+    public List<CoupangJSON_6> getBanner(){
+        CoupangJSON_1 coupangJson= coupangRequest.getResponseDataClass(this.URL,this.header,CoupangJSON_1.class);
+        return coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
+    }
+
+    private List<ModusaleAppData> parseTo(List<CoupangJSON_6> coupangBannerList){
         Map<String,List<String>> itemFromGithub=gitHubData.getCoupangItemMap();
         Map<String,List<String>> monthlyItemFromGithub= gitHubData.getCouapngMonthlyMap();
+
+        List<ModusaleAppData> coupangAppDataList=new ArrayList<>();
+
         for(CoupangJSON_6 banner:coupangBannerList){
             String monthBannerScheme=banner.getScheme();
             List<CoupangImageJSON_2> monthlyItems = getMonthlyMenu(banner, monthBannerScheme);
 
             if(monthlyItems==null){
                 if (itemFromGithub.get(banner.getId()) != null) {
-                    if(itemFromGithub.get(banner.getId()).get(0).equals("no")==false) {
+                    if(!itemFromGithub.get(banner.getId()).get(0).equals("no")) {
                         for(int i=0;i<itemFromGithub.get(banner.getId()).size();i+=2) {
                             CoupangAppData coupangAppData = new CoupangAppData();
                             coupangAppData.setBrandName(itemFromGithub.get(banner.getId()).get(i));
@@ -100,21 +128,10 @@ public class CoupangRequest extends RequestTemplate {
                 }
             }
         }
-        coupangAppDataList.sort(new Comparator<>() {
-            @Override
-            public int compare(ModusaleAppData o1, ModusaleAppData o2) {
-                return o1.getBrandName().compareTo(o2.getBrandName());
-            }
-        });
+        coupangAppDataList.sort(Comparator.comparing(ModusaleAppData::getBrandName));
 
-        return removeDup(coupangAppDataList);
+        return coupangAppDataList;
     }
-
-    public List<CoupangJSON_6> getBanner(){
-        CoupangJSON_1 coupangJson= coupangRequest.getResponseDataClass(this.URL,this.header,CoupangJSON_1.class);
-        return coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
-    }
-
 
     public LinkedHashMap<String,String> getCoupangBannerList(){
         LinkedHashMap<String, String> imageBannerMap=new LinkedHashMap<>();

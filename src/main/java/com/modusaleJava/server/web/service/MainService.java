@@ -1,6 +1,6 @@
-package com.modusaleJava.server.service;
+package com.modusaleJava.server.web.service;
 
-import com.modusaleJava.server.utils.ModusaleMapper;
+import com.modusaleJava.server.utils.GpsData;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,6 +15,10 @@ public class MainService {
     }
 
     public Map<String,List<String>> getData(){
+        return data;
+    }
+
+    public Map<String,List<String>> getDataFrom(GpsData gpsData){
         return data;
     }
 

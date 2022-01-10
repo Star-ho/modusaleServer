@@ -15,7 +15,7 @@ public class GitHubData {
     private String itemlistCoupangMonthly;
     private String itemlistWemef;
     private String menufile;
-    private String UnifiedName;
+    private String unifiedName;
     private Map<String,String> header;
     private ModusaleRequestTemplate modusaleRequestTemplate;
 
@@ -26,7 +26,7 @@ public class GitHubData {
         this.menufile = menufile;
     }
     public void setUnifiedName(String unifiedName) {
-        UnifiedName = unifiedName;
+        this.unifiedName = unifiedName;
     }
     public void setHeader(Map<String, String> header) {
         this.header = header;
@@ -84,7 +84,7 @@ public class GitHubData {
 
     public Map<String,String> getUnifiedNameMap(){
         Map<String,String> unifiedNameMap=new HashMap<>();
-        List<List<String>> nameList=parseToList(this.UnifiedName);
+        List<List<String>> nameList=parseToList(this.unifiedName);
         for(List<String> strList:nameList){
             for(int i=1;i<strList.size();i++){
                 unifiedNameMap.put(strList.get(i),strList.get(0));
