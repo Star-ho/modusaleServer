@@ -17,12 +17,11 @@ public class GitHubData {
     private String itemlistWemef;
     private String menufile;
     private String unifiedName;
-    @Getter
-    private Map<String,List<String>> menufileMap;
-    @Getter
-    private Map<String,String> unifiedNameMap;
     private Map<String,String> header;
     private ModusaleRequestTemplate modusaleRequestTemplate;
+
+    @Autowired
+    private AppDataObj appDataObj;
 
     public void setBaseURL(String baseURL) {
         this.baseURL = baseURL;
@@ -89,7 +88,7 @@ public class GitHubData {
     }
 
     public void setCategoryMap(){
-        this.menufileMap=parseToMap(this.menufile,0);
+        appDataObj.setMenufileMap(parseToMap(this.menufile,0));
     }
 
     public void setUnifiedNameMap(){
@@ -100,7 +99,8 @@ public class GitHubData {
                 unifiedNameMap.put(strList.get(i),strList.get(0));
             }
         }
-        this.unifiedNameMap=unifiedNameMap;
+        appDataObj.setUnifiedNameMap(unifiedNameMap);
+
     }
 
     public Map<String,List<String>> parseToMap(String URL,int keyIndex){

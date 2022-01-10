@@ -1,20 +1,25 @@
 package com.modusaleJava.server.web.service;
 
+import com.modusaleJava.server.coupang.CoupangRequest;
 import com.modusaleJava.server.utils.ImgSourceToHTML;
+import com.modusaleJava.server.wemefo.WemefoRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
 
 @Service
 public class ImageService {
-    private String imgStr="";
+    @Autowired
+    private CoupangRequest coupangRequest;
+    @Autowired
+    private WemefoRequest wemefoRequest;
 
-    public void consume(LinkedHashMap<String,String> message){
-        ImgSourceToHTML imgSourceToHTML=new ImgSourceToHTML();
-        this.imgStr=imgSourceToHTML.imgToHTML(message);
-    }
 
     public String showimg(){
-        return imgStr;
+        LinkedHashMap<String,String> message= coupangRequest.getCoupangBannerList();
+        message.putAll(wemefoRequest.getWemefBannerList());
+        ImgSourceToHTML imgSourceToHTML=new ImgSourceToHTML();
+        return imgSourceToHTML.imgToHTML(message);
     }
 }

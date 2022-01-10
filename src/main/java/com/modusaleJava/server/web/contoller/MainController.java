@@ -43,8 +43,8 @@ public class MainController {
     }
 
     @GetMapping("/getDataFromGps")
-    public Map<String, List<String>> getDataWithGPS(@RequestParam GpsData gpsData){
-        return mainService.getDataFrom(gpsData);
+    public Map<String, List<String>> getDataWithGPS(){
+        return mainService.getDataFrom();
     }
 
     @GetMapping("/refresh")
