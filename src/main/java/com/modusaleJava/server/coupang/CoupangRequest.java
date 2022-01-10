@@ -85,7 +85,7 @@ public class CoupangRequest extends RequestTemplate {
 
     private List<ModusaleAppData> parseTo(List<CoupangJSON_6> coupangBannerList){
         Map<String,List<String>> itemFromGithub=gitHubData.getCoupangItemMap();
-        Map<String,List<String>> monthlyItemFromGithub= gitHubData.getCouapngMonthlyMap();
+        Map<String,List<String>> monthlyItemFromGithub= gitHubData.getCoupangMonthlyMap();
 
         List<ModusaleAppData> coupangAppDataList=new ArrayList<>();
 
