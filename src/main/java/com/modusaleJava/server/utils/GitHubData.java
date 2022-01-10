@@ -1,5 +1,6 @@
 package com.modusaleJava.server.utils;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,10 @@ public class GitHubData {
     private String itemlistWemef;
     private String menufile;
     private String unifiedName;
+    @Getter
+    private Map<String,List<String>> menufileMap;
+    @Getter
+    private Map<String,String> unifiedNameMap;
     private Map<String,String> header;
     private ModusaleRequestTemplate modusaleRequestTemplate;
 
@@ -66,7 +71,7 @@ public class GitHubData {
         return parsedMap;
     }
 
-    public Map<String,List<String>> getCouapngMonthlyMap(){
+    public Map<String,List<String>> getCoupangMonthlyMap(){
         return parseToMap(this.itemlistCoupangMonthly,2);
     }
 
@@ -74,15 +79,20 @@ public class GitHubData {
         return getGithubData(this.itemlistCoupangImage);
     }
 
-    public Map<String,List<String>> getCategoryMap(){
-        return parseToMap(this.menufile,0);
-    }
-
     public Map<String,List<String>> getWemefMap(){
         return parseToMap(this.itemlistWemef,0);
     }
 
-    public Map<String,String> getUnifiedNameMap(){
+    public void setGithubData(){
+        setUnifiedNameMap();
+        setCategoryMap();
+    }
+
+    public void setCategoryMap(){
+        this.menufileMap=parseToMap(this.menufile,0);
+    }
+
+    public void setUnifiedNameMap(){
         Map<String,String> unifiedNameMap=new HashMap<>();
         List<List<String>> nameList=parseToList(this.unifiedName);
         for(List<String> strList:nameList){
@@ -90,7 +100,7 @@ public class GitHubData {
                 unifiedNameMap.put(strList.get(i),strList.get(0));
             }
         }
-        return unifiedNameMap;
+        this.unifiedNameMap=unifiedNameMap;
     }
 
     public Map<String,List<String>> parseToMap(String URL,int keyIndex){

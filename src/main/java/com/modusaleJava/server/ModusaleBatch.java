@@ -73,6 +73,7 @@ public class ModusaleBatch {
 
     public void consume(){
         telegramAPI.send("refresh!!");
+        gitHubData.setGithubData();
         wemefBatch();
         baeminYogiyoCoupangBatch(true);
     }
@@ -81,6 +82,11 @@ public class ModusaleBatch {
     @Scheduled(fixedDelay = 1000*60*5)
     public void fiveMinBatch(){
         baeminYogiyoCoupangBatch(false);
+    }
+
+    @Scheduled(fixedDelay = 1000*60*60*6)
+    public void sixHourBatch(){
+        gitHubData.setGithubData();
     }
 
 
@@ -149,7 +155,7 @@ public class ModusaleBatch {
 //            System.out.println(coupangDataList);
         }
         if(flag){
-            mergeAndSend();
+        mergeAndSend();
         }
     }
 
@@ -160,7 +166,7 @@ public class ModusaleBatch {
         modusaleDataList.addAll(this.yogiyoDataList);
         modusaleDataList.addAll(this.coupangDataList);
         Map<String,String > unifiedName =gitHubData.getUnifiedNameMap();
-        Map<String,List<String>> cateMappingName=gitHubData.getCategoryMap();
+        Map<String,List<String>> cateMappingName=gitHubData.getMenufileMap();
         Map<String,List<String>> retList=new HashMap<>();
         for(int i = 0; i< modusaleDataList.size(); i++){
             ModusaleAppData data= modusaleDataList.get(i);
