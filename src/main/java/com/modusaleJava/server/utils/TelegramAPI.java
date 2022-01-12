@@ -22,7 +22,7 @@ public class TelegramAPI {
 
     public void send(String str){
         String encodeStr = URLEncoder.encode(str, StandardCharsets.UTF_8);
-        telegramRequest.getResponseDataClass(this.sendURL + encodeStr,String.class);
-        telegramRequest.getResponseDataClass(this.deleteURL,String.class);
+        telegramRequest.getResponseAsync(this.sendURL + encodeStr,String.class);
+        telegramRequest.getResponseAsync(this.deleteURL,String.class);
     }
 }

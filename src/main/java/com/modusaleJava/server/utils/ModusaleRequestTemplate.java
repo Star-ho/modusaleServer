@@ -7,6 +7,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 import java.util.Map;
 
 @Data
@@ -14,7 +16,7 @@ import java.util.Map;
 public class ModusaleRequestTemplate {
 
     public ResponseSpec getResponseData(String URL,Map<String,String> headers){
-        ResponseSpec responseData=null;
+        ResponseSpec responseData;
         DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory(URL);
         uriBuilderFactory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
@@ -56,6 +58,19 @@ public class ModusaleRequestTemplate {
             }
         }
         return resData;
+    }
+
+    public <T> void getResponseAsync(String URL, Class<T> tClass){
+        int i=0;
+        while (i<10) {
+            try {
+                getResponseData(URL, null).bodyToMono(tClass);
+                break;
+            }catch (Exception e){
+                System.out.println(e);
+                i++;
+            }
+        }
     }
 
     public <T> T getResponseDataClass(String URL,Map<String,String> headers,Class<T> tClass){
