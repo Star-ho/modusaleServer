@@ -104,17 +104,18 @@ public class ModusaleBatch {
         try{
             appDataObj.setYogiyoDataList(yogiyoRequest.getAppData());
         }catch (Exception e){
-            telegramAPI.send("yogiyo error!!!\n"+e.getMessage());
+            telegramAPI.send("yogiyo error!!!\n"+e);
         }
         try {
             appDataObj.setBaeminDataList(baeminRequest.getAppData());
         }catch (Exception e){
-            telegramAPI.send("baemin error!!!\n"+e.getMessage());
+            telegramAPI.send("baemin error!!!\n"+e);
         }
         try{
             appDataObj.setCoupangDataList(coupangRequest.getAppData());
         }catch (Exception e){
-            telegramAPI.send("coupang error!!!\n"+e.getMessage());
+            telegramAPI.send("coupang error!!!\n"+e);
+            System.out.println(e);
         }
     }
 }

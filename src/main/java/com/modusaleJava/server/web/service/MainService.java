@@ -36,12 +36,14 @@ public class MainService {
         try {
             data.putAll(appDataObj.getDataMapFrom(coupangRequest.getAppDataByGps(gpsData),100));
         }catch (Exception e){
-            telegramAPI.send("coupang error!!!\n"+e.getMessage());
+            telegramAPI.send("coupang error!!!\n"+e);
+            System.out.println(e);
         }
         try {
             data.putAll(appDataObj.getDataMapFrom(yogiyoRequest.getAppDataByGps(gpsData),300));
         }catch (Exception e){
-            telegramAPI.send("yogiyo error!!!\n"+e.getMessage());
+            telegramAPI.send("yogiyo error!!!\n"+e);
+            System.out.println(e);
         }
         return data;
     }
