@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping
@@ -38,13 +40,17 @@ public class MainController {
     public void setTodayService(TodayService todayService){this.todayService=todayService;}
 
     @GetMapping
-    public Map<String, List<String>> returnData(){
+    public Map<String, List<String>> getData(@RequestParam("ver")String version){
+        System.out.println(version);
+        if(Objects.equals(version, "0.91")){
+            throw new IllegalArgumentException("");
+        }
         return mainService.getData();
     }
 
     @GetMapping("/getDataFromGps")
-    public Map<String, List<String>> getDataWithGPS(){
-        return mainService.getDataFrom();
+    public Map<String, List<String>> getDataWithGPS(@RequestParam String latitude,@RequestParam String longitude){
+        return mainService.getDataFrom(new GpsData(latitude,longitude));
     }
 
     @GetMapping("/refresh")

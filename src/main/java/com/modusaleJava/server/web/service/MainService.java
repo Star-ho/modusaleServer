@@ -27,21 +27,21 @@ public class MainService {
         return appDataObj.getAllDataMap();
     }
 
-    public Map<String,List<String>> getDataFrom(){
+    public Map<String,List<String>> getDataFrom(GpsData gpsData){
         Map<String, List<String>> data=new HashMap<>();
         data.putAll(appDataObj.getDataMapFromBaemin());
         data.putAll(appDataObj.getDataMapFromWemef());
-        GpsData gpsData=new GpsData("37.551555","126.9893033");
+//        GpsData gpsData=new GpsData("37.551555","126.9893033");
         //reactive로 구현
         try {
             data.putAll(appDataObj.getDataMapFrom(coupangRequest.getAppDataByGps(gpsData),100));
         }catch (Exception e){
-            System.out.println("coupang error!!!\n"+e.getMessage());
+            telegramAPI.send("coupang error!!!\n"+e.getMessage());
         }
         try {
             data.putAll(appDataObj.getDataMapFrom(yogiyoRequest.getAppDataByGps(gpsData),300));
         }catch (Exception e){
-            System.out.println("yogiyo error!!!\n"+e.getMessage());
+            telegramAPI.send("yogiyo error!!!\n"+e.getMessage());
         }
         return data;
     }
