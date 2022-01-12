@@ -42,9 +42,9 @@ public class MainController {
     @GetMapping
     public Map<String, List<String>> getData(@RequestParam("ver")String version){
         System.out.println(version);
-        if(Objects.equals(version, "0.91")){
-            throw new IllegalArgumentException("");
-        }
+//        if(Objects.equals(version, "0.91")){
+//            throw new IllegalArgumentException("");
+//        }
         return mainService.getData();
     }
 
