@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class ModusaleAppData {
-    private String appName;
-    private String brandName;
-    private String price;
-    private String brandScheme;
-    private String id;
-    private String imagePath;
+    protected String appName;
+    protected String brandName;
+    protected String price;
+    protected String brandScheme;
+    protected String id;
+    protected String imagePath;
 }
