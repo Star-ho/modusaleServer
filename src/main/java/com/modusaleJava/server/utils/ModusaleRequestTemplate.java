@@ -64,7 +64,7 @@ public class ModusaleRequestTemplate {
         int i=0;
         while (i<10) {
             try {
-                getResponseData(URL, null).bodyToMono(tClass);
+                getResponseData(URL, null).bodyToMono(tClass).subscribe();
                 break;
             }catch (Exception e){
                 System.out.println(e);
