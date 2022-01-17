@@ -81,7 +81,7 @@ public class ModusaleBatch {
         sleep(1000 * 60);
     }
 
-    @Scheduled(fixedDelay = 1000*60*60*2)
+    @Scheduled(fixedDelay = 1000*60*60*4)
     public void twoHourBatch(){
         telegramAPI.send("running batch server");
     }
