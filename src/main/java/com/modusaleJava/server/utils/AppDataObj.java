@@ -25,19 +25,16 @@ public class AppDataObj {
     List<ModusaleAppData> wemefDataList =new ArrayList<>();
 
 
-    @Autowired
-    private AppDataObj appDataObj;
-
     public Map<String, List<String>> getDataMapFromBaemin(){
         return getDataMapFrom(baeminDataList,0);
     }
 
     public Map<String, List<String>> getAllDataMap(){
         Map<String, List<String>> data=new HashMap<>();
-        data.putAll(appDataObj.getDataMapFromBaemin());
-        data.putAll(appDataObj.getDataMapFromCoupang());
-        data.putAll(appDataObj.getDataMapFromWemef());
-        data.putAll(appDataObj.getDataMapFromYogiyo());
+        data.putAll(getDataMapFromBaemin());
+        data.putAll(getDataMapFromCoupang());
+        data.putAll(getDataMapFromWemef());
+        data.putAll(getDataMapFromYogiyo());
         return data;
     }
 
@@ -54,8 +51,8 @@ public class AppDataObj {
     }
 
     public  <T extends ModusaleAppData> Map<String, List<String>> getDataMapFrom(List<T> modusaleDataList,int startNum){
-        Map<String,String > unifiedName =appDataObj.getUnifiedNameMap();
-        Map<String,List<String>> cateMappingName=appDataObj.getMenufileMap();
+        Map<String,String > unifiedName =getUnifiedNameMap();
+        Map<String,List<String>> cateMappingName=getMenufileMap();
         Map<String,List<String>> retList=new HashMap<>();
         for(int i = 0; i<modusaleDataList.size(); i++){
             ModusaleAppData data= modusaleDataList.get(i);
