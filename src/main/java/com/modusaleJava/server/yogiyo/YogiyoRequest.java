@@ -20,7 +20,7 @@ public class YogiyoRequest extends RequestTemplate {
     private String URL;
     private Map<String,String> headers;
     private String location;
-    private ModusaleRequestTemplate yogiyoRequest;
+    private ModusaleRequestTemplate modusaleRequestTemplate;
 
     public void setHeaders(Map<String,String> headers){
         this.headers=headers;
@@ -33,8 +33,8 @@ public class YogiyoRequest extends RequestTemplate {
     }
 
     @Autowired
-    public void setYogiyoRequest(ModusaleRequestTemplate yogiyoRequest) {
-        this.yogiyoRequest = yogiyoRequest;
+    public void setModusaleRequestTemplate(ModusaleRequestTemplate modusaleRequestTemplate) {
+        this.modusaleRequestTemplate = modusaleRequestTemplate;
     }
 
     @Override
@@ -46,10 +46,9 @@ public class YogiyoRequest extends RequestTemplate {
     }
 
     public List<ModusaleAppData> getAppDataByGps(GpsData gpsData){
-        List<String> urlArr=new ArrayList<>();
-        urlArr.add(String.format(this.URL,gpsData.getLongitude(),gpsData.getLatitude()));
-        List<YogiyoResponseJSON> responseList=sendTo(urlArr);
-        return removeDup(parseTo(responseList));
+        String url = String.format(this.URL,gpsData.getLongitude(),gpsData.getLatitude());
+        YogiyoResponseJSON responseList=sendTo(url);
+        return removeDup(parseJSON(responseList));
     }
 
     private List<String> getUrlList(ArrayList<List<String>> locArr){
@@ -58,6 +57,20 @@ public class YogiyoRequest extends RequestTemplate {
             urlArr.add(String.format(this.URL,loc.get(1),loc.get(0)));
         }
         return urlArr;
+    }
+
+    private YogiyoResponseJSON sendTo(String url){
+        YogiyoResponseJSON response = null;
+        for (int i=0;i<10;) {
+            try {
+                response = modusaleRequestTemplate.getResponseDataClass(url,this.headers,YogiyoResponseJSON.class);
+                i=10;
+            }catch (Exception e){
+                System.out.println(e);
+                i++;
+            }
+        }
+        return response;
     }
 
     private List<YogiyoResponseJSON> sendTo(List<String> urlArr){
@@ -79,7 +92,7 @@ public class YogiyoRequest extends RequestTemplate {
     }
 
     private Flux<YogiyoResponseJSON> yogiyoRequest(String URL){
-        return yogiyoRequest.getResponseDataFlux(URL,this.headers,YogiyoResponseJSON.class);
+        return modusaleRequestTemplate.getResponseDataFlux(URL,this.headers,YogiyoResponseJSON.class);
     }
 
     private ArrayList<List<String>> locToArr(String location){
@@ -95,17 +108,22 @@ public class YogiyoRequest extends RequestTemplate {
         List<ModusaleAppData> yogiyoAppDataList=new ArrayList<>();
 
         for(YogiyoResponseJSON response:responseList){
-            for(var item : response.getHotdeals().getItems()){
-                YogiyoAppData yogiyoAppData=new YogiyoAppData();
-                yogiyoAppData.setBrandName(item.getName());
-                yogiyoAppData.setPrice(item.getAdditional_discount());
-                yogiyoAppData.setBrandScheme("yogiyoapp://franchise?fr_id="+item.getFranchise_id());
-                yogiyoAppDataList.add(yogiyoAppData);
-            }
+            yogiyoAppDataList.addAll(parseJSON(response));
         }
         yogiyoAppDataList=yogiyoAppDataList.stream().distinct().collect(Collectors.toList());
         yogiyoAppDataList.sort(Comparator.comparing(ModusaleAppData::getBrandName));
         return yogiyoAppDataList;
     }
 
+    private List<ModusaleAppData> parseJSON(YogiyoResponseJSON response){
+        List<ModusaleAppData> yogiyoAppDataList=new ArrayList<>();
+        for(var item : response.getHotdeals().getItems()){
+            YogiyoAppData yogiyoAppData=new YogiyoAppData();
+            yogiyoAppData.setBrandName(item.getName());
+            yogiyoAppData.setPrice(item.getAdditional_discount());
+            yogiyoAppData.setBrandScheme("yogiyoapp://franchise?fr_id="+item.getFranchise_id());
+            yogiyoAppDataList.add(yogiyoAppData);
+        }
+        return yogiyoAppDataList;
+    }
 }
