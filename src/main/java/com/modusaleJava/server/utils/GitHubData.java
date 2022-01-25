@@ -1,7 +1,7 @@
 package com.modusaleJava.server.utils;
 
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import java.util.*;
@@ -10,59 +10,45 @@ import java.util.*;
 @Component
 @ConfigurationProperties("modusale.github")
 public class GitHubData {
-    private String baseURL;
-    private String itemlistCoupang;
-    private String itemlistCoupangImage;
-    private String itemlistCoupangMonthly;
-    private String itemlistWemef;
-    private String menufile;
-    private String unifiedName;
+    private final AppDataObj appDataObj;
+    private final String baseURL;
+    private final String itemlistCoupang;
+    private final String itemlistCoupangImage;
+    private final String itemlistCoupangMonthly;
+    private final String itemlistWemef;
+    private final String menufile;
+    private final String unifiedName;
+    private final ModusaleRequestTemplate modusaleRequestTemplate;
     private Map<String,String> header;
-    private ModusaleRequestTemplate modusaleRequestTemplate;
 
-    @Autowired
-    private AppDataObj appDataObj;
-
-    public void setBaseURL(String baseURL) {
-        this.baseURL = baseURL;
-    }
-    public void setMenufile(String menufile) {
-        this.menufile = menufile;
-    }
-    public void setUnifiedName(String unifiedName) {
-        this.unifiedName = unifiedName;
-    }
-    public void setHeader(Map<String, String> header) {
-        this.header = header;
-    }
-    public void setItemlistCoupang(String itemlistCoupang) {
-        this.itemlistCoupang = itemlistCoupang;
-    }
-    public void setItemlistCoupangImage(String itemlistCoupangImage) {
-        this.itemlistCoupangImage = itemlistCoupangImage;
-    }
-    public void setItemlistCoupangMonthly(String itemlistCoupangMonthly) {
-        this.itemlistCoupangMonthly = itemlistCoupangMonthly;
-    }
-    public void setItemlistWemef(String itemlistWemef) {
-        this.itemlistWemef = itemlistWemef;
+    public GitHubData(@Autowired AppDataObj appDataObj, @Value("baseURL") String baseURL, @Value("itemlistCoupang") String itemlistCoupang,
+                      @Value("itemlistCoupangImage") String itemlistCoupangImage, @Value("itemlistCoupangMonthly") String itemlistCoupangMonthly,
+                      @Value("itemlistWemef") String itemlistWemef, @Value("menufile") String menufile,@Value("unifiedName") String unifiedName,
+                      @Autowired ModusaleRequestTemplate modusaleRequestTemplate){
+        this.appDataObj=appDataObj;
+        this.baseURL=baseURL;
+        this.itemlistCoupang=itemlistCoupang;
+        this.itemlistCoupangImage=itemlistCoupangImage;
+        this.itemlistCoupangMonthly=itemlistCoupangMonthly;
+        this.itemlistWemef=itemlistWemef;
+        this.menufile=menufile;
+        this.unifiedName=unifiedName;
+        this.modusaleRequestTemplate=modusaleRequestTemplate;
     }
 
-    @Autowired
-    public void setModusaleRequestTemplate(ModusaleRequestTemplate modusaleRequestTemplate) {
-        this.modusaleRequestTemplate = modusaleRequestTemplate;
+    public void setHeader( Map<String,String> header ){
+        this.header=header;
     }
 
     public Map<String,List<String>> getCoupangItemMap(){
-        return parseToMapforCoupang(this.itemlistCoupang,0);
+        return parseToMapForCoupang(this.itemlistCoupang,0);
     }
 
-    public Map<String,List<String>> parseToMapforCoupang(String URL,int keyIndex){
+    public Map<String,List<String>> parseToMapForCoupang(String URL, int keyIndex){
         Map<String,List<String>> parsedMap=new HashMap<>();
         List<List<String>> parsedString=parseToList(URL);
         for(List<String> strList:parsedString){
-            ArrayList<String > strArrayList=new ArrayList<>();
-            strArrayList.addAll(strList);
+            ArrayList<String > strArrayList=new ArrayList<>(strList);
             String key=strList.get(keyIndex);
             strArrayList.remove(keyIndex);
             parsedMap.put(key,strArrayList);
@@ -74,7 +60,7 @@ public class GitHubData {
         return parseToMap(this.itemlistCoupangMonthly,2);
     }
 
-    public List<String> getCouapngImageList(){
+    public List<String> getCoupangImageList(){
         return getGithubData(this.itemlistCoupangImage);
     }
 
@@ -100,10 +86,9 @@ public class GitHubData {
             }
         }
         appDataObj.setUnifiedNameMap(unifiedNameMap);
-
     }
 
-    public Map<String,List<String>> parseToMap(String URL,int keyIndex){
+    private Map<String,List<String>> parseToMap(String URL,int keyIndex){
         Map<String,List<String>> parsedMap=new HashMap<>();
         List<List<String>> parsedString=parseToList(URL);
         for(List<String> strList:parsedString){
@@ -112,7 +97,7 @@ public class GitHubData {
         return parsedMap;
     }
 
-    public List<List<String>> parseToList(String URL){
+    private List<List<String>> parseToList(String URL){
         List<List<String>> parsedList=new ArrayList<>();
         List<String> parseCRLF= getGithubData(URL);
         for (String str : parseCRLF) {
@@ -124,7 +109,7 @@ public class GitHubData {
         return parsedList;
     }
 
-    public List<String> getGithubData(String URL){
+    private List<String> getGithubData(String URL){
         String data=modusaleRequestTemplate.getResponseDataClass(this.baseURL+URL,this.header,String.class);
         return Arrays.asList(data.split("\n"));
     }
