@@ -11,9 +11,9 @@ import com.modusaleJava.server.utils.TelegramAPI;
 import com.modusaleJava.server.wemefo.WemefoRequest;
 import com.modusaleJava.server.yogiyo.YogiyoRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import java.util.*;
 
 import static java.lang.Thread.sleep;
 
@@ -82,6 +82,7 @@ public class ModusaleBatch {
     }
 
     @Scheduled(fixedDelay = 1000*60*60*4)
+    @ConditionalOnProperty(prefix = "job.autorun", name = "enabled", havingValue = "true", matchIfMissing = true)
     public void twoHourBatch(){
         telegramAPI.send("running batch server");
     }
