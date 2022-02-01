@@ -1,15 +1,17 @@
 package com.modusaleJava.server.web.service;
 
 import com.modusaleJava.server.utils.AppDataObj;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
 public class TodayService {
 
-    @Autowired
-    private AppDataObj appDataObj;
+    private final AppDataObj appDataObj;
+
+    public TodayService(AppDataObj appDataObj){
+        this.appDataObj=appDataObj;
+    }
 
     public String showTodaySale(){
         StringBuilder todaySaleStr= new StringBuilder();

@@ -1,27 +1,28 @@
 package com.modusaleJava.server.web.service;
 
-import com.modusaleJava.server.ModusaleAppData;
 import com.modusaleJava.server.coupang.CoupangRequest;
 import com.modusaleJava.server.utils.AppDataObj;
 import com.modusaleJava.server.utils.GpsData;
 import com.modusaleJava.server.utils.TelegramAPI;
 import com.modusaleJava.server.yogiyo.YogiyoRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.*;
 
 @Service
 public class MainService {
 
-    @Autowired
-    private AppDataObj appDataObj;
-    @Autowired
-    private YogiyoRequest yogiyoRequest;
-    @Autowired
-    private CoupangRequest coupangRequest;
-    @Autowired
-    private TelegramAPI telegramAPI;
+    private final AppDataObj appDataObj;
+    private final YogiyoRequest yogiyoRequest;
+    private final CoupangRequest coupangRequest;
+
+
+    public MainService(AppDataObj appDataObj, YogiyoRequest yogiyoRequest, CoupangRequest coupangRequest){
+        this.appDataObj=appDataObj;
+        this.yogiyoRequest=yogiyoRequest;
+        this.coupangRequest=coupangRequest;
+    }
 
     public Map<String,List<String>> getData(){
         return appDataObj.getAllDataMap();
