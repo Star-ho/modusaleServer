@@ -45,19 +45,10 @@ public class CoupangRequest extends RequestTemplate {
     }
 
     public List<ModusaleAppData> getAppDataByGps(GpsData gps){
-        var gpsAppliedHeader= deepCloneheader();
-        gpsAppliedHeader.put("X-EATS-LOCATION", "{\"addressId\":0,\"latitude\":"+gps.getLatitude()+",\"longitude\":"+gps.getLongitude()+",\"regionId\":10,\"siDo\":\"%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C\",\"siGunGu\":\"%EC%A4%91%EA%B5%AC\"}");
-        CoupangJSON_1 coupangJson= modusaleRequestTemplate.getResponseDataClass(this.URL,gpsAppliedHeader,CoupangJSON_1.class);
+        gpsHeader.put("X-EATS-LOCATION", "{\"addressId\":0,\"latitude\":"+gps.getLatitude()+",\"longitude\":"+gps.getLongitude()+",\"regionId\":10,\"siDo\":\"%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C\",\"siGunGu\":\"%EC%A4%91%EA%B5%AC\"}");
+        CoupangJSON_1 coupangJson= modusaleRequestTemplate.getResponseDataClass(this.URL,gpsHeader,CoupangJSON_1.class);
         List<CoupangJSON_6> coupangBannerList = coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
         return removeDup(parseTo(coupangBannerList));
-    }
-
-    private HashMap<String, String> deepCloneheader(){
-        var clonedHeader = new HashMap<String,String>();
-        for(var key : this.header.keySet()){
-            clonedHeader.put(key,this.header.get(key));
-        }
-        return clonedHeader;
     }
 
     public List<CoupangJSON_6> getBanner(){
