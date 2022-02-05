@@ -1,7 +1,8 @@
-package com.modusaleJava.server;
+package com.modusale;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**

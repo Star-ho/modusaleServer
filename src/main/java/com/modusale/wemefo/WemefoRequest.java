@@ -153,12 +153,6 @@ public class WemefoRequest{
         if(count>6){
             for(int i=0;i<8;i++)telegramAPI.send("wemefOchange!!");
         }
-//        wemefAppDataList.sort(new Comparator<ModusaleAppData>() {
-//            @Override
-//            public int compare(ModusaleAppData o1, ModusaleAppData o2) {
-//                return o1.getBrandName().compareTo(o2.getBrandName());
-//            }
-//        });
         return wemefAppDataList;
     }
 }

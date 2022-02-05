@@ -2,9 +2,7 @@ package com.modusale.utils;
 
 import com.modusale.ModusaleAppData;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;

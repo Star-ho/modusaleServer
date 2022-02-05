@@ -18,9 +18,9 @@ import java.util.Objects;
 public class MainController {
 
     private final MainService mainService;
-    private final  ModusaleBatch modusaleBatch;
-    private final  ImageService imageService;
-    private final  TodayService todayService;
+    private final ModusaleBatch modusaleBatch;
+    private final ImageService imageService;
+    private final TodayService todayService;
 
     public MainController(ImageService imageService,ModusaleBatch modusaleBatch,MainService mainService,TodayService todayService){
         this.imageService = imageService;

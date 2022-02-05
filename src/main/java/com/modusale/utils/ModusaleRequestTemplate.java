@@ -7,7 +7,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
