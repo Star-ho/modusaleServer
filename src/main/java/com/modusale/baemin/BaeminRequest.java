@@ -6,7 +6,7 @@ import com.modusale.ModusaleAppData;
 import com.modusale.baemin.dto.BaeminAppData;
 import com.modusale.baemin.dto.BaeminResponseJSON;
 import com.modusale.utils.RequestTemplate;
-import com.modusale.utils.property.BaeminProperty;
+import com.modusale.utils.properties.BaeminProperty;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import java.util.ArrayList;

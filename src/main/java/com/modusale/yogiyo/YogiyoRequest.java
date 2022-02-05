@@ -5,7 +5,7 @@ import com.modusale.utils.GpsData;
 import com.modusale.ModusaleAppData;
 import com.modusale.utils.ModusaleRequestTemplate;
 import com.modusale.utils.RequestTemplate;
-import com.modusale.utils.property.YogiyoProperty;
+import com.modusale.utils.properties.YogiyoProperty;
 import com.modusale.yogiyo.dto.YogiyoAppData;
 import com.modusale.yogiyo.dto.YogiyoResponseJSON;
 import org.springframework.stereotype.Component;

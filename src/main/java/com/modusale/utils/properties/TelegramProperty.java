@@ -1,15 +1,15 @@
-package com.modusale.utils.property;
+package com.modusale.utils.properties;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;
-import java.util.Map;
 
-@ConfigurationProperties("modusale.coupang")
+@ConfigurationProperties("modusale.telegram")
 @ConstructorBinding
 @AllArgsConstructor
-public class CoupangProperty{
-    @Getter private final String URL;
-    @Getter private final Map<String,String> header;
+public class TelegramProperty{
+    @Getter private final String sendURL;
+    @Getter private final String deleteURL;
+
 }

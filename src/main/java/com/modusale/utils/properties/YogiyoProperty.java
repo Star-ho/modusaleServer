@@ -1,4 +1,4 @@
-package com.modusale.utils.property;
+package com.modusale.utils.properties;
 
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

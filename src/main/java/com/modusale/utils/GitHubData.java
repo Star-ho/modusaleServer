@@ -1,6 +1,6 @@
 package com.modusale.utils;
 
-import com.modusale.utils.property.GithubProperty;
+import com.modusale.utils.properties.GithubProperty;
 import org.springframework.stereotype.Component;
 import java.util.*;
 

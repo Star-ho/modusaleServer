@@ -1,4 +1,4 @@
-package com.modusale.utils.property;
+package com.modusale.utils.properties;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

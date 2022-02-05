@@ -1,6 +1,6 @@
 package com.modusale.utils;
 
-import com.modusale.utils.property.TelegramProperty;
+import com.modusale.utils.properties.TelegramProperty;
 import org.springframework.stereotype.Component;
 
 import java.net.URLEncoder;

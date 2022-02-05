@@ -5,7 +5,7 @@ import java.util.*;
 import com.modusale.utils.GitHubData;
 import com.modusale.utils.ModusaleRequestTemplate;
 import com.modusale.utils.TelegramAPI;
-import com.modusale.utils.property.WemefoProperty;
+import com.modusale.utils.properties.WemefoProperty;
 import com.modusale.wemefo.dto.WemefAppData;
 import com.modusale.wemefo.dto.WemefItem;
 import com.modusale.wemefo.dto.WemefJSON_1;

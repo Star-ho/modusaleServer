@@ -2,7 +2,7 @@ package com.modusale.coupang;
 
 import com.modusale.coupang.dto.*;
 import com.modusale.utils.*;
-import com.modusale.utils.property.CoupangProperty;
+import com.modusale.utils.properties.CoupangProperty;
 import com.modusale.ModusaleAppData;
 import org.jsoup.Jsoup;
 import org.springframework.stereotype.Component;
@@ -39,6 +39,8 @@ public class CoupangRequest extends RequestTemplate {
 
     @Override
     public List<ModusaleAppData> getAppData(){
+        System.out.println(URL);
+        System.out.println(this.header.toString());
         CoupangJSON_1 coupangJson= modusaleRequestTemplate.getResponseDataClass(this.URL,this.header,CoupangJSON_1.class);
         List<CoupangJSON_6> coupangBannerList = coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
         return removeDup(parseTo(coupangBannerList));
