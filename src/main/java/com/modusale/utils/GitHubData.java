@@ -4,11 +4,8 @@ import com.modusale.utils.property.GithubProperty;
 import org.springframework.stereotype.Component;
 import java.util.*;
 
-
 @Component
-@ConfigurationProperties("modusale.github")
 public class GitHubData {
-    private final AppDataObj appDataObj;
     private final String baseURL;
     private final String itemlistCoupang;
     private final String itemlistCoupangImage;
@@ -16,27 +13,24 @@ public class GitHubData {
     private final String itemlistWemef;
     private final String menufile;
     private final String unifiedName;
+    private final Map<String,String> header;
+    private final AppDataObj appDataObj;
     private final ModusaleRequestTemplate modusaleRequestTemplate;
-    private Map<String,String> header;
 
-    public GitHubData(@Autowired AppDataObj appDataObj, @Value("baseURL") String baseURL, @Value("itemlistCoupang") String itemlistCoupang,
-                      @Value("itemlistCoupangImage") String itemlistCoupangImage, @Value("itemlistCoupangMonthly") String itemlistCoupangMonthly,
-                      @Value("itemlistWemef") String itemlistWemef, @Value("menufile") String menufile,@Value("unifiedName") String unifiedName,
-                      @Autowired ModusaleRequestTemplate modusaleRequestTemplate){
+
+    public GitHubData(AppDataObj appDataObj, ModusaleRequestTemplate modusaleRequestTemplate, GithubProperty githubProperty){
         this.appDataObj=appDataObj;
-        this.baseURL=baseURL;
-        this.itemlistCoupang=itemlistCoupang;
-        this.itemlistCoupangImage=itemlistCoupangImage;
-        this.itemlistCoupangMonthly=itemlistCoupangMonthly;
-        this.itemlistWemef=itemlistWemef;
-        this.menufile=menufile;
-        this.unifiedName=unifiedName;
         this.modusaleRequestTemplate=modusaleRequestTemplate;
+        this.baseURL=githubProperty.getBaseURL();
+        this.itemlistCoupang=githubProperty.getItemlistCoupang();
+        this.itemlistCoupangImage=githubProperty.getItemlistCoupangImage();
+        this.itemlistCoupangMonthly=githubProperty.getItemlistCoupangMonthly();
+        this.itemlistWemef=githubProperty.getItemlistWemef();
+        this.menufile=githubProperty.getMenufile();
+        this.unifiedName=githubProperty.getUnifiedName();
+        this.header=githubProperty.getHeader();
     }
 
-    public void setHeader( Map<String,String> header ){
-        this.header=header;
-    }
 
     public Map<String,List<String>> getCoupangItemMap(){
         return parseToMapForCoupang(this.itemlistCoupang,0);

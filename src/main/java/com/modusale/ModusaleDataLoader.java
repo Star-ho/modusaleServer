@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ModusaleDataLoader implements CommandLineRunner {
-    private ModusaleBatch modusaleBatch;
+    private final ModusaleBatch modusaleBatch;
 
     public ModusaleDataLoader(@Autowired ModusaleBatch modusaleBatch) {
         this.modusaleBatch = modusaleBatch;

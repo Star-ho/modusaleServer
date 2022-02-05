@@ -5,55 +5,37 @@ import com.modusale.utils.*;
 import com.modusale.utils.property.CoupangProperty;
 import com.modusale.ModusaleAppData;
 import org.jsoup.Jsoup;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-
 @Component
-@ConfigurationProperties("modusale.coupang")
 public class CoupangRequest extends RequestTemplate {
 
-    private String URL;
-    private Map<String,String> header;
-
-    public void setURL(String URL) {
-        this.URL = URL;
-    }
-    public void setHeader(Map<String, String> header) {
-        this.header = header;
-    }
-
     final String alertMsg="*********************\n";
-    private ModusaleMapper modusaleMapper;
-    private ModusaleRequestTemplate modusaleRequestTemplate;
-    private GitHubData gitHubData;
-    private TelegramAPI telegramAPI;
+    private final String URL;
+    private final Map<String,String> header;
+    private final Map<String,String> gpsHeader;
+    private final ModusaleMapper modusaleMapper;
+    private final ModusaleRequestTemplate modusaleRequestTemplate;
+    private final GitHubData gitHubData;
+    private final TelegramAPI telegramAPI;
 
 
-    @Autowired
-    public void setTelegramAPI(TelegramAPI telegramAPI) {
-        this.telegramAPI = telegramAPI;
-    }
-
-    @Autowired
-    public void getGitHubData(GitHubData gitHubData) {
-        this.gitHubData=gitHubData;
-    }
-
-    @Autowired
-    public void setModusaleMapper(ModusaleMapper modusaleMapper){
+    public CoupangRequest(TelegramAPI telegramAPI, GitHubData gitHubData, ModusaleMapper modusaleMapper,
+                          ModusaleRequestTemplate modusaleRequestTemplate, CoupangProperty coupangProperty){
+        this.telegramAPI=telegramAPI;
         this.modusaleMapper=modusaleMapper;
+        this.gitHubData=gitHubData;
+        this.modusaleRequestTemplate=modusaleRequestTemplate;
+        this.URL=coupangProperty.getURL();
+        this.header=coupangProperty.getHeader();
+        this.gpsHeader=new HashMap<>();
+        gpsHeader.putAll(coupangProperty.getHeader());
     }
 
-    @Autowired
-    public void setModusaleRequestTemplate(ModusaleRequestTemplate modusaleRequestTemplate) {
-        this.modusaleRequestTemplate = modusaleRequestTemplate;
-    }
 
     @Override
     public List<ModusaleAppData> getAppData(){
@@ -182,7 +164,7 @@ public class CoupangRequest extends RequestTemplate {
                 String monthlyHTML= modusaleRequestTemplate.getResponseDataClass(imgURL,String.class);
                 String monthlyImageJSON=Jsoup.parse(monthlyHTML).select("#landing_page").attr("data-landingpage");
                 List<CoupangImageJSON_2> coupangImageList=modusaleMapper.jsonToObj(monthlyImageJSON, CoupangImageJSON_1.class).getImages();
-                List<String> imageListFromGithub = gitHubData.getCouapngImageList();
+                List<String> imageListFromGithub = gitHubData.getCoupangImageList();
 
                 loop: for(CoupangImageJSON_2 couapngImage:coupangImageList){
                     if(couapngImage.getScheme()!=null) {

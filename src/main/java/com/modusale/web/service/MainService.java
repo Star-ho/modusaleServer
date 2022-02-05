@@ -16,12 +16,13 @@ public class MainService {
     private final AppDataObj appDataObj;
     private final YogiyoRequest yogiyoRequest;
     private final CoupangRequest coupangRequest;
+    private final TelegramAPI telegramAPI;
 
-
-    public MainService(AppDataObj appDataObj, YogiyoRequest yogiyoRequest, CoupangRequest coupangRequest){
+    public MainService(AppDataObj appDataObj, YogiyoRequest yogiyoRequest, CoupangRequest coupangRequest, TelegramAPI telegramAPI){
         this.appDataObj=appDataObj;
         this.yogiyoRequest=yogiyoRequest;
         this.coupangRequest=coupangRequest;
+        this.telegramAPI=telegramAPI;
     }
 
     public Map<String,List<String>> getData(){

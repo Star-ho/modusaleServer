@@ -7,30 +7,25 @@ import com.modusale.baemin.dto.BaeminAppData;
 import com.modusale.baemin.dto.BaeminResponseJSON;
 import com.modusale.utils.RequestTemplate;
 import com.modusale.utils.property.BaeminProperty;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 
-//데이터를 받아오는 클래스
 @Component
 public class BaeminRequest extends RequestTemplate {
-    @Value("${modusale.baemin.baeminSchemeHeader}")
-    private String baeminSchemeHeader;
-    @Value("${modusale.baemin.URL}")
-    private String URL;
-    @Value("${modusale.baemin.category}")
-    private List<String> category;
-    private ModusaleRequestTemplate baeminRequest;
+    private final String baeminSchemeHeader;
+    private final String URL;
+    private final List<String> category;
+    private final ModusaleRequestTemplate modusaleRequestTemplate;
 
-    @Autowired
-    public void setBaeminRequest(ModusaleRequestTemplate baeminRequest) {
-        this.baeminRequest = baeminRequest;
+    public BaeminRequest(BaeminProperty baeminProperty, ModusaleRequestTemplate modusaleRequestTemplate){
+        this.baeminSchemeHeader=baeminProperty.getBaeminSchemeHeader();
+        this.URL=baeminProperty.getURL();
+        this.category=baeminProperty.getCategory();
+        this.modusaleRequestTemplate=modusaleRequestTemplate;
     }
 
     @Override
@@ -103,6 +98,6 @@ public class BaeminRequest extends RequestTemplate {
 
     //data를 arrayList로 받기 한줄이라 함수로 따로 만들필요 없을 수 있지만 따로 안만들면 코드가 너무 더러워짐
     public Flux<BaeminResponseJSON> baeminRequest(String URL){
-        return baeminRequest.getResponseDataFlux(URL,BaeminResponseJSON.class);
+        return modusaleRequestTemplate.getResponseDataFlux(URL,BaeminResponseJSON.class);
     }
 }

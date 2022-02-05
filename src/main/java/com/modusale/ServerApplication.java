@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * ssh -i "starho_key.pem" ubuntu@ec2-3-35-173-138.ap-northeast-2.compute.amazonaws.com
  */
 
+@ConfigurationPropertiesScan("com.modusale.utils")
 @SpringBootApplication
 @EnableScheduling
 public class ServerApplication {

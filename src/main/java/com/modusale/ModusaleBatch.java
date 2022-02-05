@@ -1,16 +1,12 @@
 package com.modusale;
 
-import com.modusale.web.service.ImageService;
-import com.modusale.web.service.TodayService;
 import com.modusale.yogiyo.YogiyoRequest;
 import com.modusale.baemin.BaeminRequest;
 import com.modusale.coupang.CoupangRequest;
 import com.modusale.utils.AppDataObj;
-import com.modusale.web.service.MainService;
 import com.modusale.utils.GitHubData;
 import com.modusale.utils.TelegramAPI;
 import com.modusale.wemefo.WemefoRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -20,41 +16,25 @@ import static java.lang.Thread.sleep;
 @Component
 public class ModusaleBatch {
 
-    @Autowired
-    private BaeminRequest baeminRequest;
-    @Autowired
-    private YogiyoRequest yogiyoRequest;
-    @Autowired
-    private CoupangRequest coupangRequest;
-    @Autowired
-    private WemefoRequest wemefoRequest;
-    private TelegramAPI telegramAPI;
-    private GitHubData gitHubData;
-    private ImageService imageService;
-    @Autowired
-    private MainService mainService;
-    private TodayService todayService;
+    private final AppDataObj appDataObj;
+    private final BaeminRequest baeminRequest;
+    private final YogiyoRequest yogiyoRequest;
+    private final CoupangRequest coupangRequest;
+    private final WemefoRequest wemefoRequest;
+    private final TelegramAPI telegramAPI;
+    private final GitHubData gitHubData;
 
-    @Autowired
-    private AppDataObj appDataObj;
 
-    @Autowired
-    private void setTodayService(TodayService todayService){this.todayService=todayService;}
-
-    @Autowired
-    private void setImageService(ImageService imageService){
-        this.imageService=imageService;
+    public ModusaleBatch(AppDataObj appDataObj, BaeminRequest baeminRequest, YogiyoRequest yogiyoRequest, CoupangRequest coupangRequest,
+                         WemefoRequest wemefoRequest, TelegramAPI telegramAPI, GitHubData gitHubData ){
+        this.appDataObj=appDataObj;
+        this.baeminRequest=baeminRequest;
+        this.yogiyoRequest=yogiyoRequest;
+        this.wemefoRequest=wemefoRequest;
+        this.coupangRequest=coupangRequest;
+        this.telegramAPI=telegramAPI;
+        this.gitHubData=gitHubData;
     }
-
-    @Autowired
-    public void setGitHubData(GitHubData gitHubData) {
-        this.gitHubData = gitHubData;
-    }
-    @Autowired
-    public void setTelegramAPI(TelegramAPI telegramAPI) {
-        this.telegramAPI = telegramAPI;
-    }
-
 
     public void consume(){
         telegramAPI.send("refresh!!");

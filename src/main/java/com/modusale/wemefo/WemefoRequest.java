@@ -15,39 +15,22 @@ import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Component
-@ConfigurationProperties("modusale.wemefo")
 public class WemefoRequest{
-    private String URL;
-    private Map<String,String> headers;
+    private final String URL;
+    private final Map<String,String> headers;
+    private final ModusaleRequestTemplate modusaleRequestTemplate;
+    private final GitHubData gitHubData;
+    private final TelegramAPI telegramAPI;
 
-    public void setURL(String URL) {
-        this.URL = URL;
-    }
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
-    }
-
-    private ModusaleRequestTemplate wemefORequest;
-    private GitHubData gitHubData;
-    private TelegramAPI telegramAPI;
-
-    @Autowired
-    public void getGitHubData(GitHubData gitHubData) {
+    public WemefoRequest(WemefoProperty wemefoProperty, ModusaleRequestTemplate modusaleRequestTemplate,
+                         GitHubData gitHubData, TelegramAPI telegramAPI){
+        this.URL=wemefoProperty.getURL();
+        this.headers=wemefoProperty.getHeaders();
+        this.modusaleRequestTemplate=modusaleRequestTemplate;
         this.gitHubData=gitHubData;
-    }
-
-    @Autowired
-    public void setModusaleRequestTemplate(ModusaleRequestTemplate modusaleRequestTemplate){
-        this.wemefORequest = modusaleRequestTemplate;
-    }
-
-    @Autowired
-    public void setTelegramAPI(TelegramAPI telegramAPI) {
-        this.telegramAPI = telegramAPI;
+        this.telegramAPI=telegramAPI;
     }
 
     public List<ModusaleAppData> getWemefOData(){
@@ -72,7 +55,7 @@ public class WemefoRequest{
 
     private List<List<String>> getParsedData(){
         String wemefURL=getWemefCouponURL();
-        String wemefRes=wemefORequest.getResponseDataClass(wemefURL,String.class);
+        String wemefRes=modusaleRequestTemplate.getResponseDataClass(wemefURL,String.class);
         return WemefHTMLparse(wemefRes);
     }
 
@@ -120,7 +103,7 @@ public class WemefoRequest{
 
     private String getWemefCouponURL() throws NullPointerException{
         String wemefURL="";
-        WemefJSON_1 resForURL=wemefORequest.getResponseDataClass(this.URL,this.headers,WemefJSON_1.class);
+        WemefJSON_1 resForURL=modusaleRequestTemplate.getResponseDataClass(this.URL,this.headers,WemefJSON_1.class);
         ArrayList<WemefJSON_4> items=resForURL.getData().getTemplates().get(1).getItems();
         for(WemefJSON_4 item:items){
             if(item.getTitle()!=null &&item.getTitle().contains("쿠폰모음")){

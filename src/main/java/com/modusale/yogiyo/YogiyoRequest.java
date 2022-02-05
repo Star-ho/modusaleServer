@@ -14,26 +14,17 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
-@ConfigurationProperties("modusale.yogiyo")
 public class YogiyoRequest extends RequestTemplate {
-    private String URL;
-    private Map<String,String> headers;
-    private String location;
-    private ModusaleRequestTemplate modusaleRequestTemplate;
+    private final String URL;
+    private final Map<String,String> headers;
+    private final String location;
+    private final ModusaleRequestTemplate modusaleRequestTemplate;
 
-    public void setHeaders(Map<String,String> headers){
-        this.headers=headers;
-    }
-    public void setURL(String URL) {
-        this.URL = URL;
-    }
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    @Autowired
-    public void setModusaleRequestTemplate(ModusaleRequestTemplate modusaleRequestTemplate) {
-        this.modusaleRequestTemplate = modusaleRequestTemplate;
+    public YogiyoRequest(YogiyoProperty yogiyoProperty, ModusaleRequestTemplate modusaleRequestTemplate){
+        this.URL=yogiyoProperty.getURL();
+        this.headers=yogiyoProperty.getHeaders();
+        this.location=yogiyoProperty.getLocation();
+        this.modusaleRequestTemplate=modusaleRequestTemplate;
     }
 
     @Override
