@@ -41,20 +41,20 @@ public class CoupangRequest extends RequestTemplate {
     public List<ModusaleAppData> getAppData(){
         System.out.println(URL);
         System.out.println(this.header.toString());
-        CoupangJSON_1 coupangJson= modusaleRequestTemplate.getResponseDataClass(this.URL,this.header,CoupangJSON_1.class);
+        CoupangJSON_1 coupangJson= modusaleRequestTemplate.syncDataFrom(this.URL,this.header,CoupangJSON_1.class);
         List<CoupangJSON_6> coupangBannerList = coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
         return removeDup(parseTo(coupangBannerList));
     }
 
     public List<ModusaleAppData> getAppDataByGps(GpsData gps){
         gpsHeader.put("X-EATS-LOCATION", "{\"addressId\":0,\"latitude\":"+gps.getLatitude()+",\"longitude\":"+gps.getLongitude()+",\"regionId\":10,\"siDo\":\"%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C\",\"siGunGu\":\"%EC%A4%91%EA%B5%AC\"}");
-        CoupangJSON_1 coupangJson= modusaleRequestTemplate.getResponseDataClass(this.URL,gpsHeader,CoupangJSON_1.class);
+        CoupangJSON_1 coupangJson= modusaleRequestTemplate.syncDataFrom(this.URL,gpsHeader,CoupangJSON_1.class);
         List<CoupangJSON_6> coupangBannerList = coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
         return removeDup(parseTo(coupangBannerList));
     }
 
     public List<CoupangJSON_6> getBanner(){
-        CoupangJSON_1 coupangJson= modusaleRequestTemplate.getResponseDataClass(this.URL,this.header,CoupangJSON_1.class);
+        CoupangJSON_1 coupangJson= modusaleRequestTemplate.syncDataFrom(this.URL,this.header,CoupangJSON_1.class);
         return coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
     }
 
@@ -154,7 +154,7 @@ public class CoupangRequest extends RequestTemplate {
             if(temp.length>1)keyParam=temp[1];
 
             if(keyParam.startsWith(mouthString)||keyParam.startsWith(lastMonthString)){//월간 할인 확인 분기
-                String monthlyHTML= modusaleRequestTemplate.getResponseDataClass(imgURL,String.class);
+                String monthlyHTML= modusaleRequestTemplate.syncDataFrom(imgURL,String.class);
                 String monthlyImageJSON=Jsoup.parse(monthlyHTML).select("#landing_page").attr("data-landingpage");
                 List<CoupangImageJSON_2> coupangImageList=modusaleMapper.jsonToObj(monthlyImageJSON, CoupangImageJSON_1.class).getImages();
                 List<String> imageListFromGithub = gitHubData.getCoupangImageList();

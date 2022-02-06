@@ -53,7 +53,7 @@ public class YogiyoRequest extends RequestTemplate {
         YogiyoResponseJSON response = null;
         for (int i=0;i<10;) {
             try {
-                response = modusaleRequestTemplate.getResponseDataClass(url,this.headers,YogiyoResponseJSON.class);
+                response = modusaleRequestTemplate.syncDataFrom(url,this.headers,YogiyoResponseJSON.class);
                 i=10;
             }catch (Exception e){
                 System.out.println(e);
@@ -82,7 +82,7 @@ public class YogiyoRequest extends RequestTemplate {
     }
 
     private Flux<YogiyoResponseJSON> yogiyoRequest(String URL){
-        return modusaleRequestTemplate.getResponseDataFlux(URL,this.headers,YogiyoResponseJSON.class);
+        return modusaleRequestTemplate.asyncDataFrom(URL,this.headers,YogiyoResponseJSON.class);
     }
 
     private ArrayList<List<String>> locToArr(String location){

@@ -55,7 +55,7 @@ public class WemefoRequest{
 
     private List<List<String>> getParsedData(){
         String wemefURL=getWemefCouponURL();
-        String wemefRes=modusaleRequestTemplate.getResponseDataClass(wemefURL,String.class);
+        String wemefRes=modusaleRequestTemplate.syncDataFrom(wemefURL,String.class);
         return WemefHTMLparse(wemefRes);
     }
 
@@ -103,7 +103,7 @@ public class WemefoRequest{
 
     private String getWemefCouponURL() throws NullPointerException{
         String wemefURL="";
-        WemefJSON_1 resForURL=modusaleRequestTemplate.getResponseDataClass(this.URL,this.headers,WemefJSON_1.class);
+        WemefJSON_1 resForURL=modusaleRequestTemplate.syncDataFrom(this.URL,this.headers,WemefJSON_1.class);
         ArrayList<WemefJSON_4> items=resForURL.getData().getTemplates().get(1).getItems();
         for(WemefJSON_4 item:items){
             if(item.getTitle()!=null &&item.getTitle().contains("쿠폰모음")){

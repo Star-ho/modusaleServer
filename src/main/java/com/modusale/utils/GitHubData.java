@@ -102,7 +102,7 @@ public class GitHubData {
     }
 
     private List<String> getGithubData(String URL){
-        String data=modusaleRequestTemplate.getResponseDataClass(this.baseURL+URL,this.header,String.class);
+        String data=modusaleRequestTemplate.syncDataFrom(this.baseURL+URL,this.header,String.class);
         return Arrays.asList(data.split("\n"));
     }
 }

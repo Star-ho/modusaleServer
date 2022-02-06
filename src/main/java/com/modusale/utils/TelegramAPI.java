@@ -20,7 +20,7 @@ public class TelegramAPI {
 
     public void send(String str){
         String encodeStr = URLEncoder.encode(str, StandardCharsets.UTF_8);
-        modusaleRequestTemplate.getResponseAsync(this.sendURL + encodeStr,String.class);
-        modusaleRequestTemplate.getResponseAsync(this.deleteURL,String.class);
+        modusaleRequestTemplate.asyncDataFrom(this.sendURL + encodeStr,String.class);
+        modusaleRequestTemplate.asyncDataFrom(this.deleteURL,String.class);
     }
 }
