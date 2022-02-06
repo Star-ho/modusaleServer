@@ -14,12 +14,14 @@ import java.util.stream.Collectors;
 @Component
 public class BaeminRequest extends RequestTemplate {
     private final String baeminSchemeHeader;
+    private final String appName;
     private final String URL;
     private final List<String> categories;
     private final ModusaleRequestTemplate modusaleRequestTemplate;
 
     public BaeminRequest(BaeminProperty baeminProperty, ModusaleRequestTemplate modusaleRequestTemplate){
         this.baeminSchemeHeader=baeminProperty.getBaeminSchemeHeader();
+        this.appName=baeminProperty.getAppName();
         this.URL=baeminProperty.getURL();
         this.categories =baeminProperty.getCategories();
         this.modusaleRequestTemplate=modusaleRequestTemplate;
@@ -49,6 +51,7 @@ public class BaeminRequest extends RequestTemplate {
         for (var resData : resDataList) {
             if (resData.getMaxDiscountCouponPrice()!=null) {//할인이 있을때 넣기
                 BaeminAppData baeminAppData = new BaeminAppData();
+                baeminAppData.setAppName(this.appName);
                 baeminAppData.setBrandName(resData.getBrandName());
                 baeminAppData.setPrice(resData.getMaxDiscountCouponPrice());
                 baeminAppData.setBrandScheme(baeminSchemeHeader + resData.getId());

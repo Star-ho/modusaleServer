@@ -12,6 +12,7 @@ import java.util.List;
 @ConstructorBinding
 @AllArgsConstructor
 public class BaeminProperty {
+    @Getter private final String appName;
     @Getter private final String baeminSchemeHeader;
     @Getter private final String URL;
     @Getter @Setter private List<String> categories;
