@@ -44,12 +44,12 @@ public class ModusaleBatch {
     }
 
 
-    @Scheduled(fixedDelay = 1000*60*5)
+    @Scheduled(initialDelay = 1000*60*5, fixedDelay = 1000*60*5)
     public void fiveMinBatch(){
         baeminYogiyoCoupangBatch();
     }
 
-    @Scheduled(fixedDelay = 1000*60*60*6)
+    @Scheduled(initialDelay = 1000*60*60*6, fixedDelay = 1000*60*60*6)
     public void sixHourBatch(){
         gitHubData.setGithubData();
     }
@@ -61,8 +61,7 @@ public class ModusaleBatch {
         sleep(1000 * 60);
     }
 
-    @Scheduled(fixedDelay = 1000*60*60*4)
-    @ConditionalOnProperty(prefix = "job.autorun", name = "enabled", havingValue = "true", matchIfMissing = true)
+    @Scheduled(initialDelay = 1000*60*60*4, fixedDelay = 1000*60*60*4)
     public void twoHourBatch(){
         telegramAPI.send("running batch server");
     }
@@ -92,11 +91,6 @@ public class ModusaleBatch {
         }catch (Exception e){
             telegramAPI.send("baemin error!!!\n"+e);
         }
-        try{
-            appDataObj.setCoupangDataList(coupangRequest.getAppData());
-        }catch (Exception e){
-            telegramAPI.send("coupang error!!!\n"+e);
-            System.out.println(e);
-        }
+        appDataObj.setCoupangDataList(coupangRequest.getAppData());
     }
 }
