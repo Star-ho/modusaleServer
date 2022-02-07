@@ -82,7 +82,7 @@ public class YogiyoRequest extends RequestTemplate {
     }
 
     private Flux<YogiyoResponseJSON> yogiyoRequest(String URL){
-        return modusaleRequestTemplate.asyncDataFrom(URL,this.headers,YogiyoResponseJSON.class);
+        return modusaleRequestTemplate.syncDataListFrom(URL,this.headers,YogiyoResponseJSON.class);
     }
 
     private ArrayList<List<String>> locToArr(String location){
