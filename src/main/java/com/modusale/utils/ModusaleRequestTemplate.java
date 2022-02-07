@@ -15,6 +15,19 @@ import java.util.Map;
 @Component
 public class ModusaleRequestTemplate {
 
+    public <T> void syncDataListFrom(String URL, Class<T> tClass){
+        int i=0;
+        while (i<10) {
+            try {
+                getModusaleWebClient(URL, null).bodyToMono(tClass).subscribe();
+                break;
+            }catch (Exception e){
+                System.out.println(e);
+                i++;
+            }
+        }
+    }
+
     public <T> T syncDataFrom(String URL, Class<T> tClass){
         return syncDataFrom(URL,null,tClass);
     }
@@ -34,33 +47,30 @@ public class ModusaleRequestTemplate {
         return resData;
     }
 
-    public <T> void asyncDataFrom(String URL, Class<T> tClass){
+    public <T> List<T> syncDataListFrom(List<String> urlList, Class<T> tClass){
+        return syncDataListFrom1(urlList,null,tClass);
+    }
+
+    public <T> List<T> syncDataListFrom1(List<String> urlList, Map<String,String> header, Class<T> tClass){
         int i=0;
+        Flux<T> webClientList = Flux.just();
         while (i<10) {
             try {
-                getModusaleWebClient(URL, null).bodyToMono(tClass).subscribe();
+                for(String url:urlList){
+                    //concat이 순서 보장
+                    webClientList = Flux.concat(webClientList,getModusaleWebClient(url,header).bodyToFlux(tClass));
+                }
                 break;
             }catch (Exception e){
+                webClientList = Flux.just();
                 System.out.println(e);
                 i++;
             }
         }
-    }
-
-    public <T> List<T> asyncDataFrom(List<String> urlList, Class<T> tClass){
-        return asyncDataFrom1(urlList,null,tClass);
-    }
-
-    public <T> List<T> asyncDataFrom1(List<String> urlList, Map<String,String> header,Class<T> tClass){
-        Flux<T> webClientList = Flux.just();
-        for(String url:urlList){
-            //concat이 순서 보장
-            webClientList = Flux.concat(webClientList,getModusaleWebClient(url,header).bodyToFlux(tClass));
-        }
         return webClientList.collectList().block();
     }
 
-    public <T> Flux<T> asyncDataFrom(String URL, Map<String,String> headers, Class<T> tClass){
+    public <T> Flux<T> syncDataListFrom(String URL, Map<String,String> headers, Class<T> tClass){
         return  getModusaleWebClient(URL,headers).bodyToFlux(tClass);
     }
 
