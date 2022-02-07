@@ -8,8 +8,8 @@ import com.modusale.utils.TelegramAPI;
 import com.modusale.utils.properties.WemefoProperty;
 import com.modusale.wemefo.dto.WemefAppData;
 import com.modusale.wemefo.dto.WemefItem;
-import com.modusale.wemefo.dto.WemefJSON_1;
-import com.modusale.wemefo.dto.WemefJSON_4;
+import com.modusale.wemefo.dto.WemefMainJSON;
+import com.modusale.wemefo.dto.WemefCategory;
 import com.modusale.ModusaleAppData;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WemefoRequest{
+public class WemefoRequest extends ModusaleAppData{
     private final String URL;
     private final Map<String,String> headers;
     private final ModusaleRequestTemplate modusaleRequestTemplate;
@@ -34,39 +34,62 @@ public class WemefoRequest{
     }
 
     public List<ModusaleAppData> getWemefOData(){
-        List<List<String>> itemsFromWeb =getParsedData();
-        Map<String, WemefItem> itemsFromFile = getWemefItemObject();
-        return mergeData(itemsFromWeb,itemsFromFile);
+        List<List<String>> itemsFromWeb = getWemefDataFrom();
+        Map<String, WemefItem> itemsFromGithub = getGithubWemefItem();
+        return mergeData(itemsFromWeb,itemsFromGithub);
     }
 
     public LinkedHashMap<String,String> getWemefBannerList(){
         LinkedHashMap<String,String> bannerMap=new LinkedHashMap<>();
-
-        List<List<String>> htmlParse =getParsedData();
-        for(List<String> data:htmlParse){
-            if(data.size()>2) {
-                bannerMap.put(data.get(2),data.get(1));
+        List<List<String>> itemsFromWeb =getWemefDataFrom();
+        for(List<String> item:itemsFromWeb){
+            if(item.size()>2) {
+                bannerMap.put(item.get(2),item.get(1));
             }else {
-                bannerMap.put(data.get(1),data.get(0));
+                bannerMap.put(item.get(1),item.get(0));
             }
         }
         return bannerMap;
     }
 
-    private List<List<String>> getParsedData(){
-        String wemefURL=getWemefCouponURL();
+    private List<List<String>> getWemefDataFrom(){
+        String wemefURL = getWemefCouponURL();
         String wemefRes=modusaleRequestTemplate.syncDataFrom(wemefURL,String.class);
-        return WemefHTMLparse(wemefRes);
+        return getParsedData(wemefRes);
     }
 
-    private List<List<String>> WemefHTMLparse(String wemefRes){
+    private String getWemefCouponURL(){
+        WemefMainJSON wemefMainJSON=modusaleRequestTemplate.syncDataFrom(this.URL,this.headers, WemefMainJSON.class);
+        ArrayList<WemefCategory> wemefCategories=wemefMainJSON.getData().getTemplates().get(1).getItems();
+        for(WemefCategory item:wemefCategories){
+            if(item.getTitle()!=null &&item.getTitle().contains("쿠폰모음")){
+                String[] temp=item.getLink().split("=");
+                return temp[temp.length-1];
+            }
+        }
+        telegramAPI.send("위메프 쿠폰모음이 없습니다");
+        throw new NullPointerException();
+    }
+
+    private List<List<String>> getParsedData(String wemefRes){
+        Elements pTagElement = getPTageElement(wemefRes);
+        List<List<String>> wemefItemList = getWemefItemList(pTagElement);
+        return removeNullBanner(wemefItemList);
+    }
+
+    private Elements getPTageElement(String wemefRes){
+        System.out.println(wemefRes);
         Elements pTag=Jsoup.parse(wemefRes).select("div.view_coupon_desc").select("div div").select("p");//p태그 파싱
         Elements pTagElement=pTag.get(pTag.size()-2).select("p > *");//p태그 엘리먼트에서 쓸모없는것들 빼기
 
-        while(pTagElement.get(0).toString().contains("data-filename")==false){//쓸모없는거 날리기
+        while(!pTagElement.get(0).toString().contains("data-filename")){//쓸모없는거 날리기
             pTagElement=pTagElement.next();
         }
-        List<List<String>> wemefBannerList = Arrays.stream(pTagElement.toArray()).map(element->{
+        return pTagElement;
+    }
+
+    private List<List<String>> getWemefItemList(Elements pTagElement){
+        return Arrays.stream(pTagElement.toArray()).map(element->{
             String elementString=element.toString();
             List<String> elementURIList=null;
 
@@ -91,44 +114,28 @@ public class WemefoRequest{
             }
             return elementURIList;
         }).collect(Collectors.toList());
+    }
 
-        List<List<String>> remveNullBannerList=new ArrayList<>();
+    private List<List<String>> removeNullBanner(List<List<String>> wemefBannerList){
+        List<List<String>> bannerListDeletedNull=new ArrayList<>();
         for(List<String> banner:wemefBannerList ){
             if(banner!=null){
-                remveNullBannerList.add(banner);
+                bannerListDeletedNull.add(banner);
             }
         }
-        return remveNullBannerList;
+        return bannerListDeletedNull;
     }
 
-    private String getWemefCouponURL() throws NullPointerException{
-        String wemefURL="";
-        WemefJSON_1 resForURL=modusaleRequestTemplate.syncDataFrom(this.URL,this.headers,WemefJSON_1.class);
-        ArrayList<WemefJSON_4> items=resForURL.getData().getTemplates().get(1).getItems();
-        for(WemefJSON_4 item:items){
-            if(item.getTitle()!=null &&item.getTitle().contains("쿠폰모음")){
-                String[] temp=item.getLink().split("=");
-                wemefURL=temp[temp.length-1];
-            }
-        }
-        return wemefURL;
-    }
-
-    private Map<String,WemefItem> getWemefItemObject(){
+    private Map<String,WemefItem> getGithubWemefItem(){
         Map<String,WemefItem> wemefItemMap= new HashMap<>();
         Map<String,List<String>> itemMap= gitHubData.getWemefMap();
-        try {
-            for(String item:itemMap.keySet()){
-                WemefItem wemefItem=new WemefItem();//순서대로 첫번쨰꺼는 브랜드명, 두번째거 가격, 세번째 스킴에 넣음
-                wemefItem.setBrandName(itemMap.get(item).get(0));
-                wemefItem.setPrice(itemMap.get(item).get(1));
-                wemefItem.setScheme(itemMap.get(item).get(2));
-                wemefItemMap.put(itemMap.get(item).get(2),wemefItem);
-            }
-        }catch (Exception e){
-            telegramAPI.send(e.getMessage());
+        for(String item:itemMap.keySet()){
+            WemefItem wemefItem=new WemefItem();
+            wemefItem.setBrandName(itemMap.get(item).get(0));
+            wemefItem.setPrice(itemMap.get(item).get(1));
+            wemefItem.setScheme(itemMap.get(item).get(2));
+            wemefItemMap.put(itemMap.get(item).get(2),wemefItem);
         }
-
         return wemefItemMap;
     }
 
@@ -145,7 +152,6 @@ public class WemefoRequest{
                     wemefAppData.setBrandScheme(item.get(0));
                     wemefAppDataList.add(wemefAppData);
                 }else{
-//                    System.out.println(item);
                     count++;
                 }
             }

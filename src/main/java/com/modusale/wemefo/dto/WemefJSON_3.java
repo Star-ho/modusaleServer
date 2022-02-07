@@ -32,6 +32,8 @@ public class WemefJSON_3 {
     private String link;
 
     @JsonProperty("items")
-    private ArrayList<WemefJSON_4> items;
+    private ArrayList<WemefCategory> items;
 
+    @JsonProperty("sortType")
+    private String sortType;
 }

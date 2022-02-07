@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class WemefJSON_1 {
+public class WemefMainJSON {
     @JsonProperty("result")
     private Object result;
 
