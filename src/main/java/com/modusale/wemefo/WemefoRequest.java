@@ -78,7 +78,6 @@ public class WemefoRequest extends ModusaleAppData{
     }
 
     private Elements getPTageElement(String wemefRes){
-        System.out.println(wemefRes);
         Elements pTag=Jsoup.parse(wemefRes).select("div.view_coupon_desc").select("div div").select("p");//p태그 파싱
         Elements pTagElement=pTag.get(pTag.size()-2).select("p > *");//p태그 엘리먼트에서 쓸모없는것들 빼기
 

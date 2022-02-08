@@ -54,8 +54,6 @@ public class ModusaleRequest {
     public <T> List<T> syncDataListFrom(List<String> urlList, Map<String,String> header, Class<T> tClass){
         int i=0;
         Flux<T> webClientList = Flux.just();
-        urlList.forEach(System.out::println);
-        System.out.println(header);
         while (i<10) {
             try {
                 for(String url:urlList){
@@ -64,7 +62,6 @@ public class ModusaleRequest {
                 }
                 return webClientList.collectList().block();
             }catch (Exception e){
-                webClientList = Flux.just();
                 System.out.println(e);
                 i++;
             }
