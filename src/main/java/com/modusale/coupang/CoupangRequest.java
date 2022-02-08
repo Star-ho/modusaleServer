@@ -11,106 +11,105 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+
 @Component
 public class CoupangRequest extends RequestTemplate {
 
     final String alertMsg="*********************\n";
     private final String URL;
     private final Map<String,String> header;
-    private final Map<String,String> gpsHeader;
     private final ModusaleMapper modusaleMapper;
-    private final ModusaleRequestTemplate modusaleRequestTemplate;
-    private final GitHubData gitHubData;
+    private final ModusaleRequest modusaleRequest;
     private final TelegramAPI telegramAPI;
-
+    private final Map<String,List<String>> itemFromGithub;
+    private final Map<String,List<String>> monthlyItemFromGithub;
+    private final List<String> imageListFromGithub;
 
     public CoupangRequest(TelegramAPI telegramAPI, GitHubData gitHubData, ModusaleMapper modusaleMapper,
-                          ModusaleRequestTemplate modusaleRequestTemplate, CoupangProperty coupangProperty){
+                          ModusaleRequest modusaleRequest, CoupangProperty coupangProperty){
         this.telegramAPI=telegramAPI;
         this.modusaleMapper=modusaleMapper;
-        this.gitHubData=gitHubData;
-        this.modusaleRequestTemplate=modusaleRequestTemplate;
+        this.modusaleRequest = modusaleRequest;
         this.URL=coupangProperty.getURL();
         this.header=coupangProperty.getHeader();
-        this.gpsHeader=new HashMap<>();
-        gpsHeader.putAll(coupangProperty.getHeader());
+        this.itemFromGithub=gitHubData.getCoupangItemMap();
+        this.monthlyItemFromGithub= gitHubData.getCoupangMonthlyMap();
+        this.imageListFromGithub = gitHubData.getCoupangImageList();
     }
 
-
-    @Override
-    public List<ModusaleAppData> getAppData(){
-        System.out.println(URL);
-        System.out.println(this.header.toString());
-        CoupangJSON_1 coupangJson= modusaleRequestTemplate.syncDataFrom(this.URL,this.header,CoupangJSON_1.class);
-        List<CoupangJSON_6> coupangBannerList = coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
-        return removeDup(parseTo(coupangBannerList));
-    }
-
-    public List<ModusaleAppData> getAppDataByGps(GpsData gps){
+    public List<ModusaleAppData> getAppDataBy(GpsData gps){
+        Map<String, String> gpsHeader = new HashMap<>(this.header);
         gpsHeader.put("X-EATS-LOCATION", "{\"addressId\":0,\"latitude\":"+gps.getLatitude()+",\"longitude\":"+gps.getLongitude()+",\"regionId\":10,\"siDo\":\"%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C\",\"siGunGu\":\"%EC%A4%91%EA%B5%AC\"}");
-        CoupangJSON_1 coupangJson= modusaleRequestTemplate.syncDataFrom(this.URL,gpsHeader,CoupangJSON_1.class);
-        List<CoupangJSON_6> coupangBannerList = coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
-        return removeDup(parseTo(coupangBannerList));
+        CoupangJSON_1 coupangJson= modusaleRequest.syncDataFrom(this.URL,gpsHeader,CoupangJSON_1.class);
+        List<ModusaleAppData> parsedDataList = getDataFrom(coupangJson);
+        return removeDup(parsedDataList);
     }
 
-    public List<CoupangJSON_6> getBanner(){
-        CoupangJSON_1 coupangJson= modusaleRequestTemplate.syncDataFrom(this.URL,this.header,CoupangJSON_1.class);
-        return coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
+    public List<ModusaleAppData> getAppData(){
+        CoupangJSON_1 coupangJson= modusaleRequest.syncDataFrom(this.URL,this.header,CoupangJSON_1.class);
+        List<ModusaleAppData> parsedDataList = getDataFrom(coupangJson);
+        return removeDup(parsedDataList);
     }
 
-    private List<ModusaleAppData> parseTo(List<CoupangJSON_6> coupangBannerList){
-        Map<String,List<String>> itemFromGithub=gitHubData.getCoupangItemMap();
-        Map<String,List<String>> monthlyItemFromGithub= gitHubData.getCoupangMonthlyMap();
-
+    private List<ModusaleAppData> getDataFrom(CoupangJSON_1 coupangJson){
+        List<CoupangJSON_6> coupangBannerList = getBannerList(coupangJson);
         List<ModusaleAppData> coupangAppDataList=new ArrayList<>();
 
         for(CoupangJSON_6 banner:coupangBannerList){
             String monthBannerScheme=banner.getScheme();
             List<CoupangImageJSON_2> monthlyItems = getMonthlyMenu(banner, monthBannerScheme);
-
             if(monthlyItems==null){
-                if (itemFromGithub.get(banner.getId()) != null) {
-                    if(!itemFromGithub.get(banner.getId()).get(0).equals("no")) {
-                        for(int i=0;i<itemFromGithub.get(banner.getId()).size();i+=2) {
-                            CoupangAppData coupangAppData = new CoupangAppData();
-                            coupangAppData.setBrandName(itemFromGithub.get(banner.getId()).get(i));
-                            coupangAppData.setPrice(itemFromGithub.get(banner.getId()).get(i+1));
-                            coupangAppData.setBrandScheme("coupang" + banner.getScheme());
-                            coupangAppData.setId(banner.getId());
-                            coupangAppData.setImagePath(banner.getImagePath());
-                            coupangAppDataList.add(coupangAppData);
-                        }
-                    }
-                } else {
-                    telegramAPI.send(alertMsg + "insert no refer!\n" + banner.getId() + "\n" + banner.getImagePath() + "\n" + banner.getScheme() + "\n");
-                }
+                ModusaleAppData modusaleAppData=getModusaleDataFrom(banner);
+                if (modusaleAppData != null) coupangAppDataList.add(modusaleAppData);
             }else{
-                for(CoupangImageJSON_2 monthlyItem : monthlyItems){
-                    if(monthlyItem.getScheme()!=null){
-                        monthlyItem.setScheme("coupang"+monthlyItem.getScheme());
-                        if(monthlyItemFromGithub.get(monthlyItem.getScheme())!=null) {
-                            CoupangAppData coupangAppData = new CoupangAppData();
-                            coupangAppData.setBrandName(monthlyItemFromGithub.get(monthlyItem.getScheme()).get(0));
-                            coupangAppData.setPrice(monthlyItemFromGithub.get(monthlyItem.getScheme()).get(1));
-                            coupangAppData.setBrandScheme("coupang"+banner.getScheme());
-                            coupangAppData.setId(monthlyItemFromGithub.get(monthlyItem.getScheme()).get(1));
-                            coupangAppData.setImagePath(monthlyItem.getImageUrl());
-                            coupangAppDataList.add(coupangAppData);
-                        }else {
-                            telegramAPI.send(alertMsg+"insert monthly no refer!\n" +"https://img1a.coupangcdn.com"+ monthlyItem.getImageUrl() + "\n" + monthlyItem.getImageUrl());
-                        }
-                    }
+                coupangAppDataList.addAll(getModusaleDataFrom(monthlyItems,banner));
+            }
+        }
+        return coupangAppDataList;
+    }
+
+    private List<ModusaleAppData> getModusaleDataFrom(List<CoupangImageJSON_2> monthlyItems, CoupangJSON_6 banner) {
+        List<ModusaleAppData> monthlyDataList=new ArrayList<>();
+        for(CoupangImageJSON_2 monthlyItem : monthlyItems){
+            if(monthlyItem.getScheme()!=null){
+                monthlyItem.setScheme("coupang"+monthlyItem.getScheme());//결과 셋을 맞추기위해 추가
+                if(monthlyItemFromGithub.get(monthlyItem.getScheme())!=null) {
+                    CoupangAppData coupangAppData = new CoupangAppData();
+                    coupangAppData.setBrandName(monthlyItemFromGithub.get(monthlyItem.getScheme()).get(0));
+                    coupangAppData.setPrice(monthlyItemFromGithub.get(monthlyItem.getScheme()).get(1));
+                    coupangAppData.setBrandScheme("coupang"+banner.getScheme());
+                    coupangAppData.setId(monthlyItemFromGithub.get(monthlyItem.getScheme()).get(1));
+                    coupangAppData.setImagePath(monthlyItem.getImageUrl());
+                    monthlyDataList.add(coupangAppData);
+                }else {
+                    telegramAPI.send(alertMsg+"insert monthly no refer!\n" +"https://img1a.coupangcdn.com"+ monthlyItem.getImageUrl() + "\n" + monthlyItem.getImageUrl());
                 }
             }
         }
-        coupangAppDataList.sort(Comparator.comparing(ModusaleAppData::getBrandName));
+        return monthlyDataList;
+    }
 
-        return coupangAppDataList;
+    private ModusaleAppData getModusaleDataFrom(CoupangJSON_6 banner){
+        if (itemFromGithub.get(banner.getId()) != null) {
+            if(!itemFromGithub.get(banner.getId()).get(0).equals("no")) {//할인정보가 아닌 베너 제거
+                CoupangAppData coupangAppData = new CoupangAppData();
+                coupangAppData.setBrandName(itemFromGithub.get(banner.getId()).get(0));
+                coupangAppData.setPrice(itemFromGithub.get(banner.getId()).get(1));
+                coupangAppData.setBrandScheme("coupang" + banner.getScheme());
+                coupangAppData.setId(banner.getId());
+                coupangAppData.setImagePath(banner.getImagePath());
+                return coupangAppData;
+            }
+        } else {
+            telegramAPI.send(alertMsg + "insert no refer!\n" + banner.getId() + "\n" + banner.getImagePath() + "\n" + banner.getScheme() + "\n");
+        }
+        return null;
     }
 
     public LinkedHashMap<String,String> getCoupangBannerList(){
         LinkedHashMap<String, String> imageBannerMap=new LinkedHashMap<>();
-        List<CoupangJSON_6> coupangBannerList= getBanner();
+        CoupangJSON_1 coupangJson= modusaleRequest.syncDataFrom(this.URL,this.header,CoupangJSON_1.class);
+        List<CoupangJSON_6> coupangBannerList= getBannerList(coupangJson);
         for(CoupangJSON_6 banner:coupangBannerList){
             String monthBannerScheme=banner.getScheme();
             List<CoupangImageJSON_2> monthlyMenu = getMonthlyMenu(banner,monthBannerScheme);
@@ -133,18 +132,21 @@ public class CoupangRequest extends RequestTemplate {
         return imageBannerMap;
     }
 
+    private List<CoupangJSON_6> getBannerList(CoupangJSON_1 coupangJson){
+        return coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
+    }
 
-    private List<CoupangImageJSON_2> getMonthlyMenu(CoupangJSON_6 banner,String mounthBannerScheme){
-        //월간 할인 메뉴 확인 위한 문자열
+    private List<CoupangImageJSON_2> getMonthlyMenu(CoupangJSON_6 banner,String monthBannerScheme){
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("MMM", Locale.ENGLISH);
         String mouthString=simpleDateFormat.format(new Date()).toUpperCase(Locale.ROOT);
         String lastMonthString=simpleDateFormat.format(new Date().getTime()-1000*60*60*24*10).toUpperCase(Locale.ROOT);
 
-        if(mounthBannerScheme.length()>0){
+        if(monthBannerScheme.length()>0){
             String imgURL;
             try {
                 imgURL=URLDecoder.decode(banner.getScheme().split("=")[1],StandardCharsets.US_ASCII);
             }catch (Exception e){
+                telegramAPI.send(e.getMessage());
                 return null;
             }
 
@@ -154,19 +156,18 @@ public class CoupangRequest extends RequestTemplate {
             if(temp.length>1)keyParam=temp[1];
 
             if(keyParam.startsWith(mouthString)||keyParam.startsWith(lastMonthString)){//월간 할인 확인 분기
-                String monthlyHTML= modusaleRequestTemplate.syncDataFrom(imgURL,String.class);
+                String monthlyHTML= modusaleRequest.syncDataFrom(imgURL,String.class);
                 String monthlyImageJSON=Jsoup.parse(monthlyHTML).select("#landing_page").attr("data-landingpage");
                 List<CoupangImageJSON_2> coupangImageList=modusaleMapper.jsonToObj(monthlyImageJSON, CoupangImageJSON_1.class).getImages();
-                List<String> imageListFromGithub = gitHubData.getCoupangImageList();
 
-                loop: for(CoupangImageJSON_2 couapngImage:coupangImageList){
-                    if(couapngImage.getScheme()!=null) {
+                loop: for(CoupangImageJSON_2 coupangImage:coupangImageList){
+                    if(coupangImage.getScheme()!=null) {
                         for(String imgFromGithub:imageListFromGithub){
-                            if(imgFromGithub.equals(couapngImage.getImageUrl())){
+                            if(imgFromGithub.equals(coupangImage.getImageUrl())){
                                 continue loop;
                             }
                         }
-                        telegramAPI.send("https://t5a.coupangcdn.com/thumbnails/remote/1024x1024"+couapngImage.getImageUrl());
+                        telegramAPI.send("https://t5a.coupangcdn.com/thumbnails/remote/1024x1024"+coupangImage.getImageUrl());
                     }
                 }
                 return coupangImageList;
