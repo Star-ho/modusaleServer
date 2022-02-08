@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -37,43 +38,39 @@ public class ModusaleRequest {
         T resData=null;
         while (i<10) {
             try {
-                resData= getModusaleWebClient(URL, headers).bodyToMono(tClass).block();
-                break;
+                return getModusaleWebClient(URL, headers).bodyToMono(tClass).block();
             }catch(Exception e){
                 System.out.println(e);
                 i++;
             }
         }
-        return resData;
+        return null;
     }
 
     public <T> List<T> asyncSend(List<String> urlList, Class<T> tClass){
-        return syncDataListFrom1(urlList,null,tClass);
+        return syncDataListFrom(urlList,null,tClass);
     }
 
-    public <T> List<T> syncDataListFrom1(List<String> urlList, Map<String,String> header, Class<T> tClass){
+    public <T> List<T> syncDataListFrom(List<String> urlList, Map<String,String> header, Class<T> tClass){
         int i=0;
         Flux<T> webClientList = Flux.just();
+        urlList.forEach(System.out::println);
+        System.out.println(header);
         while (i<10) {
             try {
                 for(String url:urlList){
                     //concat이 순서 보장
                     webClientList = Flux.concat(webClientList,getModusaleWebClient(url,header).bodyToFlux(tClass));
                 }
-                break;
+                return webClientList.collectList().block();
             }catch (Exception e){
                 webClientList = Flux.just();
                 System.out.println(e);
                 i++;
             }
         }
-        return webClientList.collectList().block();
+        return new ArrayList<>();
     }
-
-    public <T> Flux<T> asyncSend(String URL, Map<String,String> headers, Class<T> tClass){
-        return  getModusaleWebClient(URL,headers).bodyToFlux(tClass);
-    }
-
 
     private ResponseSpec getModusaleWebClient(String URL, Map<String,String> headers){
         DefaultUriBuilderFactory uriBuilderFactory = new DefaultUriBuilderFactory(URL);
