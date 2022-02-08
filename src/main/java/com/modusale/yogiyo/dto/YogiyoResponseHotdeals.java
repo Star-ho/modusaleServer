@@ -14,4 +14,9 @@ public class YogiyoResponseHotdeals {
     @JsonProperty("franchise_id")
     private String franchise_id;
 
+    @JsonProperty("logo_url")
+    private String logo_url;
+
+    @JsonProperty("is_per_menu")
+    private String is_per_menu;
 }
