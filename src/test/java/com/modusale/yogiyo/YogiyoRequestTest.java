@@ -3,6 +3,7 @@ package com.modusale.yogiyo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modusale.baemin.dto.BaeminResponseJSON;
+import com.modusale.utils.GpsData;
 import com.modusale.utils.ModusaleRequest;
 import com.modusale.utils.properties.YogiyoProperty;
 import com.modusale.yogiyo.dto.YogiyoResponseJSON;
@@ -62,5 +63,34 @@ class YogiyoRequestTest {
         assertEquals("10000",a.get(38).getPrice());
         assertEquals("계절밥상",a.get(52).getBrandName());
         assertEquals("4000",a.get(52).getPrice());
+    }
+
+    @Test
+    public void yogiyoGPSTest() throws JsonProcessingException {
+        ObjectMapper objectMapper= new ObjectMapper();
+        GpsData gpsData = new GpsData("37.4806211750226","126.944095160739");
+        Map<String,String> headers=yogiyoProperty.getHeaders();
+        String aUrl="https://www.yogiyo.co.kr/api/v1/restaurants-geo/?order=rank&max_mov=&zip_code=151058&payment=all&max_delivery_fee=&home_category=all&use_hotdeal_v2=true&lng=126.944095160739&items=70&category=%EC%A0%84%EC%B2%B4&has_discount=&own_delivery_only=false&type=all&page=0&lat=37.4806211750226";
+
+        ModusaleRequest modusaleRequest = mock(ModusaleRequest.class);
+
+        YogiyoResponseJSON yogiyoA = objectMapper.readValue(this.yogiyoA,YogiyoResponseJSON.class);
+
+        when(modusaleRequest.syncDataFrom(aUrl,headers, YogiyoResponseJSON.class))
+                .thenReturn(yogiyoA);
+
+        YogiyoRequest yogiyoRequest=new YogiyoRequest(yogiyoProperty,modusaleRequest);
+
+        var a = yogiyoRequest.getAppDataByGps(gpsData);
+
+        assertEquals(37,a.size());
+        assertEquals("배스킨라빈스",a.get(0).getBrandName());
+        assertEquals("4000",a.get(0).getPrice());
+        assertEquals("곱떡치떡",a.get(12).getBrandName());
+        assertEquals("3000",a.get(12).getPrice());
+        assertEquals("흥부찜닭",a.get(22).getBrandName());
+        assertEquals("2000",a.get(22).getPrice());
+        assertEquals("피자에땅",a.get(32).getBrandName());
+        assertEquals("3000",a.get(32).getPrice());
     }
 }
