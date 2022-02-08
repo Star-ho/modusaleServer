@@ -2,9 +2,8 @@ package com.modusale.wemefo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modusale.baemin.dto.BaeminResponseJSON;
 import com.modusale.utils.GitHubData;
-import com.modusale.utils.ModusaleRequestTemplate;
+import com.modusale.utils.ModusaleRequest;
 import com.modusale.utils.TelegramAPI;
 import com.modusale.utils.properties.WemefoProperty;
 import com.modusale.wemefo.dto.WemefMainJSON;
@@ -34,17 +33,17 @@ class WemefoRequestTest {
 
     @Test
     public void wemefoTest() throws JsonProcessingException {
-        ModusaleRequestTemplate modusaleRequestTemplate = mock(ModusaleRequestTemplate.class);
+        ModusaleRequest modusaleRequest = mock(ModusaleRequest.class);
         ObjectMapper objectMapper= new ObjectMapper();
 
         String URL=this.wemefoProperty.getURL();
         Map<String,String> headers = this.wemefoProperty.getHeaders();
         WemefMainJSON wemefMainJSON = objectMapper.readValue(this.wemefMainRes,WemefMainJSON.class);
-        when(modusaleRequestTemplate.syncDataFrom(URL,headers, WemefMainJSON.class))
+        when(modusaleRequest.syncDataFrom(URL,headers, WemefMainJSON.class))
                 .thenReturn(wemefMainJSON);
-        when(modusaleRequestTemplate.syncDataFrom("https://www.wmpo.co.kr/events/1802337", String.class))
+        when(modusaleRequest.syncDataFrom("https://www.wmpo.co.kr/events/1802337", String.class))
                 .thenReturn(this.wemefCouponRes);
-        WemefoRequest wemefoRequest=new WemefoRequest(wemefoProperty,modusaleRequestTemplate,gitHubData,telegramAPI);
+        WemefoRequest wemefoRequest=new WemefoRequest(wemefoProperty, modusaleRequest,gitHubData,telegramAPI);
         var wemefOData = wemefoRequest.getWemefOData();
         assertEquals(22,wemefOData.size());
     }

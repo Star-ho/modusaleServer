@@ -3,7 +3,7 @@ package com.modusale.yogiyo;
 
 import com.modusale.utils.GpsData;
 import com.modusale.ModusaleAppData;
-import com.modusale.utils.ModusaleRequestTemplate;
+import com.modusale.utils.ModusaleRequest;
 import com.modusale.utils.RequestTemplate;
 import com.modusale.utils.properties.YogiyoProperty;
 import com.modusale.yogiyo.dto.YogiyoAppData;
@@ -18,13 +18,13 @@ public class YogiyoRequest extends RequestTemplate {
     private final String URL;
     private final Map<String,String> headers;
     private final String location;
-    private final ModusaleRequestTemplate modusaleRequestTemplate;
+    private final ModusaleRequest modusaleRequest;
 
-    public YogiyoRequest(YogiyoProperty yogiyoProperty, ModusaleRequestTemplate modusaleRequestTemplate){
+    public YogiyoRequest(YogiyoProperty yogiyoProperty, ModusaleRequest modusaleRequest){
         this.URL=yogiyoProperty.getURL();
         this.headers=yogiyoProperty.getHeaders();
         this.location=yogiyoProperty.getLocation();
-        this.modusaleRequestTemplate=modusaleRequestTemplate;
+        this.modusaleRequest = modusaleRequest;
     }
 
     @Override
@@ -53,7 +53,7 @@ public class YogiyoRequest extends RequestTemplate {
         YogiyoResponseJSON response = null;
         for (int i=0;i<10;) {
             try {
-                response = modusaleRequestTemplate.syncDataFrom(url,this.headers,YogiyoResponseJSON.class);
+                response = modusaleRequest.syncDataFrom(url,this.headers,YogiyoResponseJSON.class);
                 i=10;
             }catch (Exception e){
                 System.out.println(e);
@@ -82,7 +82,7 @@ public class YogiyoRequest extends RequestTemplate {
     }
 
     private Flux<YogiyoResponseJSON> yogiyoRequest(String URL){
-        return modusaleRequestTemplate.syncDataListFrom(URL,this.headers,YogiyoResponseJSON.class);
+        return modusaleRequest.asyncSend(URL,this.headers,YogiyoResponseJSON.class);
     }
 
     private ArrayList<List<String>> locToArr(String location){

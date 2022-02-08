@@ -13,9 +13,9 @@ import java.util.Map;
 
 @Data
 @Component
-public class ModusaleRequestTemplate {
+public class ModusaleRequest {
 
-    public <T> void syncDataListFrom(String URL, Class<T> tClass){
+    public <T> void asyncSend(String URL, Class<T> tClass){
         int i=0;
         while (i<10) {
             try {
@@ -47,7 +47,7 @@ public class ModusaleRequestTemplate {
         return resData;
     }
 
-    public <T> List<T> syncDataListFrom(List<String> urlList, Class<T> tClass){
+    public <T> List<T> asyncSend(List<String> urlList, Class<T> tClass){
         return syncDataListFrom1(urlList,null,tClass);
     }
 
@@ -70,7 +70,7 @@ public class ModusaleRequestTemplate {
         return webClientList.collectList().block();
     }
 
-    public <T> Flux<T> syncDataListFrom(String URL, Map<String,String> headers, Class<T> tClass){
+    public <T> Flux<T> asyncSend(String URL, Map<String,String> headers, Class<T> tClass){
         return  getModusaleWebClient(URL,headers).bodyToFlux(tClass);
     }
 

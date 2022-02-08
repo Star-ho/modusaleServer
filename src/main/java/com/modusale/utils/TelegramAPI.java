@@ -10,17 +10,17 @@ import java.nio.charset.StandardCharsets;
 public class TelegramAPI {
     private final String sendURL;
     private final String deleteURL;
-    private final ModusaleRequestTemplate modusaleRequestTemplate;
+    private final ModusaleRequest modusaleRequest;
 
-    public TelegramAPI(TelegramProperty telegramProperty, ModusaleRequestTemplate modusaleRequestTemplate){
+    public TelegramAPI(TelegramProperty telegramProperty, ModusaleRequest modusaleRequest){
         this.sendURL=telegramProperty.getSendURL();
         this.deleteURL=telegramProperty.getDeleteURL();
-        this.modusaleRequestTemplate=modusaleRequestTemplate;
+        this.modusaleRequest = modusaleRequest;
     }
 
     public void send(String str){
         String encodeStr = URLEncoder.encode(str, StandardCharsets.UTF_8);
-        modusaleRequestTemplate.syncDataListFrom(this.sendURL + encodeStr,String.class);
-        modusaleRequestTemplate.syncDataListFrom(this.deleteURL,String.class);
+        modusaleRequest.asyncSend(this.sendURL + encodeStr,String.class);
+        modusaleRequest.asyncSend(this.deleteURL,String.class);
     }
 }

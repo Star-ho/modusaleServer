@@ -3,7 +3,7 @@ package com.modusale.wemefo;
 import java.util.*;
 
 import com.modusale.utils.GitHubData;
-import com.modusale.utils.ModusaleRequestTemplate;
+import com.modusale.utils.ModusaleRequest;
 import com.modusale.utils.TelegramAPI;
 import com.modusale.utils.properties.WemefoProperty;
 import com.modusale.wemefo.dto.WemefAppData;
@@ -20,15 +20,15 @@ import org.springframework.stereotype.Component;
 public class WemefoRequest extends ModusaleAppData{
     private final String URL;
     private final Map<String,String> headers;
-    private final ModusaleRequestTemplate modusaleRequestTemplate;
+    private final ModusaleRequest modusaleRequest;
     private final GitHubData gitHubData;
     private final TelegramAPI telegramAPI;
 
-    public WemefoRequest(WemefoProperty wemefoProperty, ModusaleRequestTemplate modusaleRequestTemplate,
+    public WemefoRequest(WemefoProperty wemefoProperty, ModusaleRequest modusaleRequest,
                          GitHubData gitHubData, TelegramAPI telegramAPI){
         this.URL=wemefoProperty.getURL();
         this.headers=wemefoProperty.getHeaders();
-        this.modusaleRequestTemplate=modusaleRequestTemplate;
+        this.modusaleRequest = modusaleRequest;
         this.gitHubData=gitHubData;
         this.telegramAPI=telegramAPI;
     }
@@ -54,12 +54,12 @@ public class WemefoRequest extends ModusaleAppData{
 
     private List<List<String>> getWemefDataFrom(){
         String wemefURL = getWemefCouponURL();
-        String wemefRes=modusaleRequestTemplate.syncDataFrom(wemefURL,String.class);
+        String wemefRes= modusaleRequest.syncDataFrom(wemefURL,String.class);
         return getParsedData(wemefRes);
     }
 
     private String getWemefCouponURL(){
-        WemefMainJSON wemefMainJSON=modusaleRequestTemplate.syncDataFrom(this.URL,this.headers, WemefMainJSON.class);
+        WemefMainJSON wemefMainJSON= modusaleRequest.syncDataFrom(this.URL,this.headers, WemefMainJSON.class);
         ArrayList<WemefCategory> wemefCategories=wemefMainJSON.getData().getTemplates().get(1).getItems();
         for(WemefCategory item:wemefCategories){
             if(item.getTitle()!=null &&item.getTitle().contains("쿠폰모음")){

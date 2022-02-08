@@ -4,7 +4,7 @@ package com.modusale.baemin;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modusale.baemin.dto.BaeminResponseJSON;
-import com.modusale.utils.ModusaleRequestTemplate;
+import com.modusale.utils.ModusaleRequest;
 import com.modusale.utils.properties.BaeminProperty;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,19 +53,19 @@ class BaeminRequestTest {
         BaeminResponseJSON pizzaD = objectMapper.readValue(this.pizzaD,BaeminResponseJSON.class);
         BaeminResponseJSON pizzaE = objectMapper.readValue(this.pizzaE,BaeminResponseJSON.class);
 
-        ModusaleRequestTemplate modusaleRequestTemplate = mock(ModusaleRequestTemplate.class);
-        when(modusaleRequestTemplate.syncDataListFrom(List.of("https://lounge.baemin.com/api/lounge/brands/cards/FASTFOOD?pageNumber=0&pageSize=10","https://lounge.baemin.com/api/lounge/brands/cards/CAFE?pageNumber=0&pageSize=10","https://lounge.baemin.com/api/lounge/brands/cards/PIZZA?pageNumber=0&pageSize=10"), BaeminResponseJSON.class))
+        ModusaleRequest modusaleRequest = mock(ModusaleRequest.class);
+        when(modusaleRequest.asyncSend(List.of("https://lounge.baemin.com/api/lounge/brands/cards/FASTFOOD?pageNumber=0&pageSize=10","https://lounge.baemin.com/api/lounge/brands/cards/CAFE?pageNumber=0&pageSize=10","https://lounge.baemin.com/api/lounge/brands/cards/PIZZA?pageNumber=0&pageSize=10"), BaeminResponseJSON.class))
                 .thenReturn(List.of(fastFoodA,cafeA,pizzaA));
-        when(modusaleRequestTemplate.syncDataListFrom(List.of("https://lounge.baemin.com/api/lounge/brands/cards/FASTFOOD?pageNumber=1&pageSize=10","https://lounge.baemin.com/api/lounge/brands/cards/CAFE?pageNumber=1&pageSize=10","https://lounge.baemin.com/api/lounge/brands/cards/PIZZA?pageNumber=1&pageSize=10"), BaeminResponseJSON.class))
+        when(modusaleRequest.asyncSend(List.of("https://lounge.baemin.com/api/lounge/brands/cards/FASTFOOD?pageNumber=1&pageSize=10","https://lounge.baemin.com/api/lounge/brands/cards/CAFE?pageNumber=1&pageSize=10","https://lounge.baemin.com/api/lounge/brands/cards/PIZZA?pageNumber=1&pageSize=10"), BaeminResponseJSON.class))
                 .thenReturn(List.of(fastFoodB,cafeB,pizzaB));
-        when(modusaleRequestTemplate.syncDataListFrom(List.of("https://lounge.baemin.com/api/lounge/brands/cards/CAFE?pageNumber=2&pageSize=10","https://lounge.baemin.com/api/lounge/brands/cards/PIZZA?pageNumber=2&pageSize=10"), BaeminResponseJSON.class))
+        when(modusaleRequest.asyncSend(List.of("https://lounge.baemin.com/api/lounge/brands/cards/CAFE?pageNumber=2&pageSize=10","https://lounge.baemin.com/api/lounge/brands/cards/PIZZA?pageNumber=2&pageSize=10"), BaeminResponseJSON.class))
                 .thenReturn(List.of(cafeC,pizzaC));
-        when(modusaleRequestTemplate.syncDataListFrom(List.of("https://lounge.baemin.com/api/lounge/brands/cards/PIZZA?pageNumber=3&pageSize=10"), BaeminResponseJSON.class))
+        when(modusaleRequest.asyncSend(List.of("https://lounge.baemin.com/api/lounge/brands/cards/PIZZA?pageNumber=3&pageSize=10"), BaeminResponseJSON.class))
                 .thenReturn(List.of(pizzaD));
-        when(modusaleRequestTemplate.syncDataListFrom(List.of("https://lounge.baemin.com/api/lounge/brands/cards/PIZZA?pageNumber=4&pageSize=10"), BaeminResponseJSON.class))
+        when(modusaleRequest.asyncSend(List.of("https://lounge.baemin.com/api/lounge/brands/cards/PIZZA?pageNumber=4&pageSize=10"), BaeminResponseJSON.class))
                 .thenReturn(List.of(pizzaE));
 
-        BaeminRequest baeminRequest= new BaeminRequest(baeminProperty, modusaleRequestTemplate);
+        BaeminRequest baeminRequest= new BaeminRequest(baeminProperty, modusaleRequest);
 
         var modusaleAppDataList = baeminRequest.getAppData();
         assertEquals(8,modusaleAppDataList.size());

@@ -1,7 +1,7 @@
 package com.modusale.baemin;
 
 import com.modusale.baemin.dto.*;
-import com.modusale.utils.ModusaleRequestTemplate;
+import com.modusale.utils.ModusaleRequest;
 import com.modusale.ModusaleAppData;
 import com.modusale.utils.RequestTemplate;
 import com.modusale.utils.properties.BaeminProperty;
@@ -17,14 +17,14 @@ public class BaeminRequest extends RequestTemplate {
     private final String appName;
     private final String URL;
     private final List<String> categories;
-    private final ModusaleRequestTemplate modusaleRequestTemplate;
+    private final ModusaleRequest modusaleRequest;
 
-    public BaeminRequest(BaeminProperty baeminProperty, ModusaleRequestTemplate modusaleRequestTemplate){
+    public BaeminRequest(BaeminProperty baeminProperty, ModusaleRequest modusaleRequest){
         this.baeminSchemeHeader=baeminProperty.getBaeminSchemeHeader();
         this.appName=baeminProperty.getAppName();
         this.URL=baeminProperty.getURL();
         this.categories =baeminProperty.getCategories();
-        this.modusaleRequestTemplate=modusaleRequestTemplate;
+        this.modusaleRequest = modusaleRequest;
     }
 
     public List<ModusaleAppData> getAppData(){
@@ -65,6 +65,6 @@ public class BaeminRequest extends RequestTemplate {
         for(Category category : categories){
             URLList.add(String.format(this.URL, category.getCategory(), page));
         }
-        return modusaleRequestTemplate.syncDataListFrom(URLList,BaeminResponseJSON.class);
+        return modusaleRequest.asyncSend(URLList,BaeminResponseJSON.class);
     }
 }

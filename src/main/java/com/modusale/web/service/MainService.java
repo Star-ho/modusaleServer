@@ -36,7 +36,7 @@ public class MainService {
 //        GpsData gpsData=new GpsData("37.551555","126.9893033");
         //reactive로 구현
         try {
-            data.putAll(appDataObj.getDataMapFrom(coupangRequest.getAppDataByGps(gpsData),100));
+            data.putAll(appDataObj.getDataMapFrom(coupangRequest.getAppDataBy(gpsData),100));
         }catch (Exception e){
             telegramAPI.send("coupang error!!!\n"+e);
             System.out.println(e);

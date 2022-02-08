@@ -15,12 +15,12 @@ public class GitHubData {
     private final String unifiedName;
     private final Map<String,String> header;
     private final AppDataObj appDataObj;
-    private final ModusaleRequestTemplate modusaleRequestTemplate;
+    private final ModusaleRequest modusaleRequest;
 
 
-    public GitHubData(AppDataObj appDataObj, ModusaleRequestTemplate modusaleRequestTemplate, GithubProperty githubProperty){
+    public GitHubData(AppDataObj appDataObj, ModusaleRequest modusaleRequest, GithubProperty githubProperty){
         this.appDataObj=appDataObj;
-        this.modusaleRequestTemplate=modusaleRequestTemplate;
+        this.modusaleRequest = modusaleRequest;
         this.baseURL=githubProperty.getBaseURL();
         this.itemlistCoupang=githubProperty.getItemlistCoupang();
         this.itemlistCoupangImage=githubProperty.getItemlistCoupangImage();
@@ -102,7 +102,7 @@ public class GitHubData {
     }
 
     private List<String> getGithubData(String URL){
-        String data=modusaleRequestTemplate.syncDataFrom(this.baseURL+URL,this.header,String.class);
+        String data= modusaleRequest.syncDataFrom(this.baseURL+URL,this.header,String.class);
         return Arrays.asList(data.split("\n"));
     }
 }
