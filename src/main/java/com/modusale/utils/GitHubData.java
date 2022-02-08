@@ -17,7 +17,6 @@ public class GitHubData {
     private final AppDataObj appDataObj;
     private final ModusaleRequest modusaleRequest;
 
-
     public GitHubData(AppDataObj appDataObj, ModusaleRequest modusaleRequest, GithubProperty githubProperty){
         this.appDataObj=appDataObj;
         this.modusaleRequest = modusaleRequest;
@@ -30,7 +29,6 @@ public class GitHubData {
         this.unifiedName=githubProperty.getUnifiedName();
         this.header=githubProperty.getHeader();
     }
-
 
     public Map<String,List<String>> getCoupangItemMap(){
         return parseToMapForCoupang(this.itemlistCoupang,0);
