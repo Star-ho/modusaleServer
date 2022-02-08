@@ -2,13 +2,14 @@ package com.modusale.yogiyo.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
 public class YogiyoResponseJSON {
     @JsonProperty("pagination")
     private Object pagination;
 
-    @JsonProperty("hotdeals")
+    @JsonProperty("hotdeals") @Getter
     private YogiyoResponseItems hotdeals;
 
     @JsonProperty("restaurants")

@@ -1,10 +1,13 @@
 package com.modusale.wemefo.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
 public class WemefItem {
+    @Getter @Setter
     private String brandName;
+    @Getter @Setter
     private String price;
+    @Setter
     private String scheme;
 }

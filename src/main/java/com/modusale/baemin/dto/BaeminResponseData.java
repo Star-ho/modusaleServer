@@ -1,17 +1,18 @@
 package com.modusale.baemin.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
 public class BaeminResponseData {
     @JsonProperty("id")
+    @Getter
     private int id;
 
     @JsonProperty("brandId")
     private int brandId;
 
     @JsonProperty("brandName")
+    @Getter
     private String brandName;
 
     @JsonProperty("logoUrl")
@@ -48,5 +49,6 @@ public class BaeminResponseData {
     private Object menuBanners;
 
     @JsonProperty("maxDiscountCouponPrice")
+    @Getter
     private String maxDiscountCouponPrice;
 }

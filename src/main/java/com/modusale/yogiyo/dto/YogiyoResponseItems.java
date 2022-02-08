@@ -2,10 +2,10 @@ package com.modusale.yogiyo.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.ArrayList;
 
-@Data
 public class YogiyoResponseItems {
 
     @JsonProperty("title")
@@ -15,6 +15,7 @@ public class YogiyoResponseItems {
     private String subtitle;
 
     @JsonProperty("items")
+    @Getter
     private ArrayList<YogiyoResponseHotdeals> items;
 }
 

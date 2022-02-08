@@ -2,13 +2,16 @@ package com.modusale.coupang.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
 public class CoupangImageJSON_2 {
     @JsonProperty("scheme")
+    @Getter @Setter
     private String scheme;
 
     @JsonProperty("imageUrl")
+    @Getter
     private String imageUrl;
 
     @JsonProperty("id")

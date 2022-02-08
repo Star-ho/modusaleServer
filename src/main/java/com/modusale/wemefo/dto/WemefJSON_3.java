@@ -2,10 +2,10 @@ package com.modusale.wemefo.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.ArrayList;
 
-@Data
 public class WemefJSON_3 {
     @JsonProperty("template")
     private Integer template;
@@ -32,6 +32,7 @@ public class WemefJSON_3 {
     private String link;
 
     @JsonProperty("items")
+    @Getter
     private ArrayList<WemefCategory> items;
 
     @JsonProperty("sortType")

@@ -1,13 +1,13 @@
 package com.modusale.coupang.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.ArrayList;
 
-@Data
 public class CoupangJSON_5 {
     @JsonProperty("list")
+    @Getter
     private ArrayList<CoupangJSON_6> list;
 
     @JsonProperty("info")

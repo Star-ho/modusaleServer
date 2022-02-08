@@ -2,13 +2,13 @@ package com.modusale.wemefo.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
 public class WemefMainJSON {
     @JsonProperty("result")
     private Object result;
 
-    @JsonProperty("data")
+    @JsonProperty("data") @Getter
     private WemefJSON_2 data;
 
 }

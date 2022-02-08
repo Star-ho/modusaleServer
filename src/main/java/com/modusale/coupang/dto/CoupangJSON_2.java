@@ -2,10 +2,10 @@ package com.modusale.coupang.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.ArrayList;
 
-@Data
 public class CoupangJSON_2 {
     @JsonProperty("mappedKeyword")
     private String mappedKeyword;
@@ -14,6 +14,7 @@ public class CoupangJSON_2 {
     private String nextToken;
 
     @JsonProperty("entityList")
+    @Getter
     private ArrayList<CoupangJSON_3> entityList;
 
 }
