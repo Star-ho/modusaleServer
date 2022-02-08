@@ -49,8 +49,6 @@ class WemefoRequestTest {
                 .thenReturn(wemefMainJSON);
         when(modusaleRequest.syncDataFrom("https://www.wmpo.co.kr/events/1802337", String.class))
                 .thenReturn(this.wemefCouponRes);
-        when(modusaleRequest.syncDataFrom("https://www.wmpo.co.kr/events/1802337", String.class))
-                .thenReturn(this.wemefCouponRes);
         when(modusaleRequest.syncDataFrom("https://raw.githubusercontent.com/Star-ho/modusaleDataFile/main/itemlistWemef",githubProperty.getHeader(),String.class))
                 .thenReturn(githubResponse);
 
@@ -68,4 +66,28 @@ class WemefoRequestTest {
         assertEquals("CU",wemefOData.get(20).getBrandName());
         assertEquals("3000",wemefOData.get(20).getPrice());
     }
+
+    @Test
+    public void wemefoImageTest() throws JsonProcessingException {
+        ModusaleRequest modusaleRequest = mock(ModusaleRequest.class);
+        ObjectMapper objectMapper= new ObjectMapper();
+
+        String URL=this.wemefoProperty.getURL();
+        Map<String,String> headers = this.wemefoProperty.getHeaders();
+        WemefMainJSON wemefMainJSON = objectMapper.readValue(this.wemefMainRes,WemefMainJSON.class);
+        when(modusaleRequest.syncDataFrom(URL,headers, WemefMainJSON.class))
+                .thenReturn(wemefMainJSON);
+        when(modusaleRequest.syncDataFrom("https://www.wmpo.co.kr/events/1802337", String.class))
+                .thenReturn(this.wemefCouponRes);
+        when(modusaleRequest.syncDataFrom("https://raw.githubusercontent.com/Star-ho/modusaleDataFile/main/itemlistWemef",githubProperty.getHeader(),String.class))
+                .thenReturn(githubResponse);
+
+        GitHubData gitHubData=new GitHubData(appDataObj,modusaleRequest,githubProperty);
+        WemefoRequest wemefoRequest=new WemefoRequest(wemefoProperty, modusaleRequest,gitHubData,telegramAPI);
+        var wemefOData = wemefoRequest.getWemefBannerList();
+
+        assertEquals(35,wemefOData.size());
+
+    }
+
 }
