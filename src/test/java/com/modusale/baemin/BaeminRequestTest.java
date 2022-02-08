@@ -69,6 +69,12 @@ class BaeminRequestTest {
 
         var modusaleAppDataList = baeminRequest.getAppData();
         assertEquals(8,modusaleAppDataList.size());
+        assertEquals("fastfood1",modusaleAppDataList.get(0).getBrandName());
+        assertEquals("3000",modusaleAppDataList.get(0).getPrice());
+        assertEquals("pizza1",modusaleAppDataList.get(3).getBrandName());
+        assertEquals("1111",modusaleAppDataList.get(3).getPrice());
+        assertEquals("11111",modusaleAppDataList.get(5).getBrandName());
+        assertEquals("8000",modusaleAppDataList.get(5).getPrice());
     }
 
 }
