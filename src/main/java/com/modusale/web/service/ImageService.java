@@ -19,7 +19,7 @@ public class ImageService {
 
 
     public String showimg(){
-        LinkedHashMap<String,String> message= coupangRequest.getCoupangBannerList();
+        LinkedHashMap<String,String> message= coupangRequest.getCoupangBannerImage();
         message.putAll(wemefoRequest.getWemefBannerList());
         ImgSourceToHTML imgSourceToHTML=new ImgSourceToHTML();
         return imgSourceToHTML.imgToHTML(message);

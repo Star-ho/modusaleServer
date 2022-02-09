@@ -68,6 +68,23 @@ public class CoupangRequest extends RequestTemplate {
         return coupangAppDataList;
     }
 
+    private ModusaleAppData getModusaleDataFrom(CoupangJSON_6 banner){
+        if (itemFromGithub.get(banner.getId()) != null) {
+            if(!itemFromGithub.get(banner.getId()).get(0).equals("no")) {//할인정보가 아닌 베너 제거
+                CoupangAppData coupangAppData = new CoupangAppData();
+                coupangAppData.setBrandName(itemFromGithub.get(banner.getId()).get(0));
+                coupangAppData.setPrice(itemFromGithub.get(banner.getId()).get(1));
+                coupangAppData.setBrandScheme("coupang" + banner.getScheme());
+                coupangAppData.setId(banner.getId());
+                coupangAppData.setImagePath(banner.getImagePath());
+                return coupangAppData;
+            }
+        } else {
+            telegramAPI.send(alertMsg + "쿠팡 배너 이미지 없음!\n" + banner.getId() + "\n" + banner.getImagePath() + "\n" + banner.getScheme() + "\n");
+        }
+        return null;
+    }
+
     private List<ModusaleAppData> getModusaleDataFrom(List<CoupangImageJSON_2> monthlyItems, CoupangJSON_6 banner) {
         List<ModusaleAppData> monthlyDataList=new ArrayList<>();
         for(CoupangImageJSON_2 monthlyItem : monthlyItems){
@@ -82,31 +99,14 @@ public class CoupangRequest extends RequestTemplate {
                     coupangAppData.setImagePath(monthlyItem.getImageUrl());
                     monthlyDataList.add(coupangAppData);
                 }else {
-                    telegramAPI.send(alertMsg+"insert monthly no refer!\n" +"https://img1a.coupangcdn.com"+ monthlyItem.getImageUrl() + "\n" + monthlyItem.getImageUrl());
+                    telegramAPI.send(alertMsg+"월간 할인 가격 없음!\n" +"https://img1a.coupangcdn.com"+ monthlyItem.getImageUrl() + "\n" + monthlyItem.getImageUrl());
                 }
             }
         }
         return monthlyDataList;
     }
 
-    private ModusaleAppData getModusaleDataFrom(CoupangJSON_6 banner){
-        if (itemFromGithub.get(banner.getId()) != null) {
-            if(!itemFromGithub.get(banner.getId()).get(0).equals("no")) {//할인정보가 아닌 베너 제거
-                CoupangAppData coupangAppData = new CoupangAppData();
-                coupangAppData.setBrandName(itemFromGithub.get(banner.getId()).get(0));
-                coupangAppData.setPrice(itemFromGithub.get(banner.getId()).get(1));
-                coupangAppData.setBrandScheme("coupang" + banner.getScheme());
-                coupangAppData.setId(banner.getId());
-                coupangAppData.setImagePath(banner.getImagePath());
-                return coupangAppData;
-            }
-        } else {
-            telegramAPI.send(alertMsg + "insert no refer!\n" + banner.getId() + "\n" + banner.getImagePath() + "\n" + banner.getScheme() + "\n");
-        }
-        return null;
-    }
-
-    public LinkedHashMap<String,String> getCoupangBannerList(){
+    public LinkedHashMap<String,String> getCoupangBannerImage(){
         LinkedHashMap<String, String> imageBannerMap=new LinkedHashMap<>();
         CoupangJSON_1 coupangJson= modusaleRequest.syncDataFrom(this.URL,this.header,CoupangJSON_1.class);
         List<CoupangJSON_6> coupangBannerList= getBannerList(coupangJson);
@@ -123,11 +123,6 @@ public class CoupangRequest extends RequestTemplate {
                     }
                 }
             }
-        }
-
-        List<ModusaleAppData> coupangDataList=getAppData();
-        for(ModusaleAppData data:coupangDataList){
-            imageBannerMap.put(data.getId(),data.getImagePath());
         }
         return imageBannerMap;
     }
@@ -167,7 +162,7 @@ public class CoupangRequest extends RequestTemplate {
                                 continue loop;
                             }
                         }
-                        telegramAPI.send("https://t5a.coupangcdn.com/thumbnails/remote/1024x1024"+coupangImage.getImageUrl());
+                        telegramAPI.send("월간할인 이미지 없음"+"https://t5a.coupangcdn.com/thumbnails/remote/1024x1024"+coupangImage.getImageUrl());
                     }
                 }
                 return coupangImageList;

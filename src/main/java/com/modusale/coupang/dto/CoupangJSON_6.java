@@ -22,4 +22,5 @@ public class CoupangJSON_6 {
 
     @JsonProperty("expirationDateText")
     private String expirationDateText;
+
 }

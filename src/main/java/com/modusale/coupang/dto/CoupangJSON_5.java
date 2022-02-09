@@ -12,4 +12,14 @@ public class CoupangJSON_5 {
 
     @JsonProperty("info")
     private Object info;
+
+    @JsonProperty("shortcuts")
+    private Object shortcuts;
+
+    @JsonProperty("height")
+    private Object height;
+
+    @JsonProperty("color")
+    private Object color;
+
 }
