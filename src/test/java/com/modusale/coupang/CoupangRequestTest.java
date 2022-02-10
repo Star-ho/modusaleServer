@@ -29,6 +29,7 @@ class CoupangRequestTest {
     private CoupangProperty coupangProperty;
     private final ObjectMapper objectMapper= new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     @Value("${modusale.test.coupang.banner}") private String banner;
+    @Value("${modusale.test.coupang.gpsBanner}") private String gpsBanner;
     @Value("${modusale.test.coupang.monthlyRes}") private String monthlyRes;
 
     @Test
@@ -49,7 +50,16 @@ class CoupangRequestTest {
     }
 
     @Test
-    public void coupangImageTest(){
+    public void coupangImageTest() throws JsonProcessingException {
+        String URL=coupangProperty.getURL();
+        Map<String,String> headers=coupangProperty.getHeader();
+        ModusaleRequest modusaleRequest = mock(ModusaleRequest.class);
+        CoupangJSON_1 banner = objectMapper.readValue(this.banner,CoupangJSON_1.class);
+
+        when(modusaleRequest.syncDataFrom(URL, headers, CoupangJSON_1.class))
+                .thenReturn(banner);
+        when(modusaleRequest.syncDataFrom("https://web.coupangeats.com/customer/landingPage?key=FEB_0207_IN", String.class))
+                .thenReturn(monthlyRes);
         CoupangRequest coupangRequest=new CoupangRequest(telegramAPI,gitHubData,modusaleMapper,modusaleRequest,coupangProperty);
 
         var a = coupangRequest.getCoupangBannerImage();
@@ -57,7 +67,18 @@ class CoupangRequestTest {
     }
 
     @Test
-    public void coupangGpsTest(){
+    public void coupangGpsTest() throws JsonProcessingException {
+        String URL=coupangProperty.getURL();
+        GpsData gpsData = new GpsData("35.195457","129.038147");
+        Map<String,String> headers=coupangProperty.getHeader();
+        headers.put("X-EATS-LOCATION", "{\"addressId\":0,\"latitude\":"+gpsData.getLatitude()+",\"longitude\":"+gpsData.getLongitude()+",\"regionId\":10,\"siDo\":\"%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C\",\"siGunGu\":\"%EC%A4%91%EA%B5%AC\"}");
+        ModusaleRequest modusaleRequest = mock(ModusaleRequest.class);
+        CoupangJSON_1 banner = objectMapper.readValue(this.gpsBanner,CoupangJSON_1.class);
+
+        when(modusaleRequest.syncDataFrom(URL, headers, CoupangJSON_1.class))
+                .thenReturn(banner);
+        when(modusaleRequest.syncDataFrom("https://web.coupangeats.com/customer/landingPage?key=FEB_0207_IN", String.class))
+                .thenReturn(monthlyRes);
         CoupangRequest coupangRequest=new CoupangRequest(telegramAPI,gitHubData,modusaleMapper,modusaleRequest,coupangProperty);
 
         var a = coupangRequest.getAppDataBy(gpsData);
