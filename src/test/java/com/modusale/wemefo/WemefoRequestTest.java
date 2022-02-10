@@ -1,6 +1,7 @@
 package com.modusale.wemefo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modusale.utils.AppDataObj;
 import com.modusale.utils.GitHubData;
@@ -9,7 +10,9 @@ import com.modusale.utils.TelegramAPI;
 import com.modusale.utils.properties.GithubProperty;
 import com.modusale.utils.properties.WemefoProperty;
 import com.modusale.wemefo.dto.WemefMainJSON;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(properties = {"job.autorun.enabled=false"})
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class WemefoRequestTest {
     @Autowired
     private WemefoProperty wemefoProperty;
@@ -37,10 +41,14 @@ class WemefoRequestTest {
     @Value("${modusale.test.wemef.githubResponse}")
     private String githubResponse;
 
-    @Test
-    public void wemefoTest() throws JsonProcessingException {
-        ModusaleRequest modusaleRequest = mock(ModusaleRequest.class);
-        ObjectMapper objectMapper= new ObjectMapper();
+    private final ObjectMapper objectMapper= new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+    private GitHubData gitHubData;
+    private ModusaleRequest modusaleRequest;
+
+    @BeforeAll
+    public void setup() throws JsonProcessingException {
+        modusaleRequest = mock(ModusaleRequest.class);
 
         String URL=this.wemefoProperty.getURL();
         Map<String,String> headers = this.wemefoProperty.getHeaders();
@@ -52,7 +60,11 @@ class WemefoRequestTest {
         when(modusaleRequest.syncDataFrom("https://raw.githubusercontent.com/Star-ho/modusaleDataFile/main/itemlistWemef",githubProperty.getHeader(),String.class))
                 .thenReturn(githubResponse);
 
-        GitHubData gitHubData=new GitHubData(appDataObj,modusaleRequest,githubProperty);
+        gitHubData=new GitHubData(appDataObj,modusaleRequest,githubProperty);
+
+    }
+    @Test
+    public void wemefoTest() {
         WemefoRequest wemefoRequest=new WemefoRequest(wemefoProperty, modusaleRequest,gitHubData,telegramAPI);
         var wemefOData = wemefoRequest.getWemefOData();
 
@@ -68,21 +80,8 @@ class WemefoRequestTest {
     }
 
     @Test
-    public void wemefoImageTest() throws JsonProcessingException {
-        ModusaleRequest modusaleRequest = mock(ModusaleRequest.class);
-        ObjectMapper objectMapper= new ObjectMapper();
+    public void wemefoImageTest() {
 
-        String URL=this.wemefoProperty.getURL();
-        Map<String,String> headers = this.wemefoProperty.getHeaders();
-        WemefMainJSON wemefMainJSON = objectMapper.readValue(this.wemefMainRes,WemefMainJSON.class);
-        when(modusaleRequest.syncDataFrom(URL,headers, WemefMainJSON.class))
-                .thenReturn(wemefMainJSON);
-        when(modusaleRequest.syncDataFrom("https://www.wmpo.co.kr/events/1802337", String.class))
-                .thenReturn(this.wemefCouponRes);
-        when(modusaleRequest.syncDataFrom("https://raw.githubusercontent.com/Star-ho/modusaleDataFile/main/itemlistWemef",githubProperty.getHeader(),String.class))
-                .thenReturn(githubResponse);
-
-        GitHubData gitHubData=new GitHubData(appDataObj,modusaleRequest,githubProperty);
         WemefoRequest wemefoRequest=new WemefoRequest(wemefoProperty, modusaleRequest,gitHubData,telegramAPI);
         var wemefOData = wemefoRequest.getWemefBannerList();
 
