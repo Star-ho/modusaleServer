@@ -1,6 +1,7 @@
 package com.modusale.yogiyo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modusale.baemin.dto.BaeminResponseJSON;
 import com.modusale.utils.GpsData;
@@ -30,9 +31,10 @@ class YogiyoRequestTest {
     @Autowired
     private YogiyoProperty yogiyoProperty;
 
+    private final ObjectMapper objectMapper= new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
     @Test
     public void yogiyoTest() throws JsonProcessingException {
-        ObjectMapper objectMapper= new ObjectMapper();
         String loc="[37.4806211750226,126.944095160739],[37.496559,126.956980],[37.481185,126.997724],[37.557157,126.942628]";
         yogiyoProperty.setLocation(loc);
         Map<String,String> headers=yogiyoProperty.getHeaders();
@@ -67,7 +69,6 @@ class YogiyoRequestTest {
 
     @Test
     public void yogiyoGPSTest() throws JsonProcessingException {
-        ObjectMapper objectMapper= new ObjectMapper();
         GpsData gpsData = new GpsData("37.4806211750226","126.944095160739");
         Map<String,String> headers=yogiyoProperty.getHeaders();
         String aUrl="https://www.yogiyo.co.kr/api/v1/restaurants-geo/?order=rank&max_mov=&zip_code=151058&payment=all&max_delivery_fee=&home_category=all&use_hotdeal_v2=true&lng=126.944095160739&items=70&category=%EC%A0%84%EC%B2%B4&has_discount=&own_delivery_only=false&type=all&page=0&lat=37.4806211750226";

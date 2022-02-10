@@ -2,6 +2,7 @@ package com.modusale.baemin;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modusale.baemin.dto.BaeminResponseJSON;
 import com.modusale.utils.ModusaleRequest;
@@ -25,7 +26,6 @@ class BaeminRequestTest {
     @Autowired
     private BaeminProperty baeminProperty;
 
-
     @Value("${modusale.test.baemin.FASTFOOD.a}") private String fastFoodA;
     @Value("${modusale.test.baemin.FASTFOOD.b}") private String fastFoodB;
     @Value("${modusale.test.baemin.CAFE.a}") private String cafeA;
@@ -37,9 +37,10 @@ class BaeminRequestTest {
     @Value("${modusale.test.baemin.PIZZA.d}") private String pizzaD;
     @Value("${modusale.test.baemin.PIZZA.e}") private String pizzaE;
 
+    private final ObjectMapper objectMapper= new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
     @Test
     public void baeminTest() throws JsonProcessingException {
-        ObjectMapper objectMapper= new ObjectMapper();
         List<String> category= Arrays.asList("FASTFOOD","CAFE","PIZZA");
         this.baeminProperty.setCategories(category);
         BaeminResponseJSON fastFoodA = objectMapper.readValue(this.fastFoodA,BaeminResponseJSON.class);
@@ -76,5 +77,4 @@ class BaeminRequestTest {
         assertEquals("11111",modusaleAppDataList.get(5).getBrandName());
         assertEquals("8000",modusaleAppDataList.get(5).getPrice());
     }
-
 }

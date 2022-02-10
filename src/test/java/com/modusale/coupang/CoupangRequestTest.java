@@ -3,17 +3,14 @@ package com.modusale.coupang;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modusale.baemin.dto.BaeminResponseJSON;
 import com.modusale.coupang.dto.CoupangJSON_1;
 import com.modusale.utils.*;
 import com.modusale.utils.properties.CoupangProperty;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,15 +26,13 @@ class CoupangRequestTest {
     @Autowired
     private ModusaleMapper modusaleMapper;
     @Autowired
-    private ModusaleRequest modusaleRequest;
-    @Autowired
     private CoupangProperty coupangProperty;
+    private final ObjectMapper objectMapper= new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     @Value("${modusale.test.coupang.banner}") private String banner;
     @Value("${modusale.test.coupang.monthlyRes}") private String monthlyRes;
 
     @Test
     public void coupangTest() throws JsonProcessingException {
-        ObjectMapper objectMapper= new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         String URL=coupangProperty.getURL();
         Map<String,String> headers=coupangProperty.getHeader();
         ModusaleRequest modusaleRequest = mock(ModusaleRequest.class);
@@ -64,8 +59,8 @@ class CoupangRequestTest {
     @Test
     public void coupangGpsTest(){
         CoupangRequest coupangRequest=new CoupangRequest(telegramAPI,gitHubData,modusaleMapper,modusaleRequest,coupangProperty);
-        GpsData gpsData = new GpsData("37.4806211750226","126.944095160739");
+
         var a = coupangRequest.getAppDataBy(gpsData);
-        assertEquals(24,a.size());
+        assertEquals(23,a.size());
     }
 }
