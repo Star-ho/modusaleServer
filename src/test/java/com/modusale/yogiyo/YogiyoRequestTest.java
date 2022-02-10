@@ -3,7 +3,6 @@ package com.modusale.yogiyo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modusale.baemin.dto.BaeminResponseJSON;
 import com.modusale.utils.GpsData;
 import com.modusale.utils.ModusaleRequest;
 import com.modusale.utils.properties.YogiyoProperty;
