@@ -39,13 +39,13 @@ public class MainService {
             data.putAll(appDataObj.getDataMapFrom(coupangRequest.getAppDataBy(gpsData),100));
         }catch (Exception e){
             telegramAPI.send("coupang error!!!\n"+e);
-            System.out.println(e);
+            System.out.println("coupang error!!!\n"+e);
         }
         try {
             data.putAll(appDataObj.getDataMapFrom(yogiyoRequest.getAppDataByGps(gpsData),300));
         }catch (Exception e){
             telegramAPI.send("yogiyo error!!!\n"+e);
-            System.out.println(e);
+            System.out.println("yogiyo error!!!\n"+e);
         }
         return data;
     }
