@@ -93,23 +93,26 @@ public class WemefoRequest extends ModusaleAppData{
             List<String> elementURIList=null;
 
             if(elementString.contains("a href")){
-                String[] splitedElementSting=elementString.split("\"");
-                splitedElementSting[1]=splitedElementSting[1].replace("&amp;","&");
+                String[] splitedElementString=elementString.split("\"");
+                splitedElementString[1]=splitedElementString[1].replace("&amp;","&");
                 if(elementString.contains("data-filename")){
-                    if(splitedElementSting[3].startsWith("http")&&splitedElementSting.length>5){
-                        elementURIList=Arrays.asList(splitedElementSting[1],splitedElementSting[3],splitedElementSting[7]);
+                    if(splitedElementString[3].startsWith("http")&&splitedElementString.length>5){
+                        elementURIList=Arrays.asList(splitedElementString[1],splitedElementString[3],splitedElementString[7]);
                     }else {
-                        elementURIList=Arrays.asList(splitedElementSting[1],splitedElementSting[5],splitedElementSting[9]);
+                        elementURIList=Arrays.asList(splitedElementString[1],splitedElementString[5],splitedElementString[9]);
                     }
                 }else{
-                    elementURIList=Arrays.asList(splitedElementSting[1],splitedElementSting[3]);
+                    if(splitedElementString.length<3) {
+                        elementURIList = Arrays.asList(splitedElementString[1], splitedElementString[3]);
+                    }else{
+                        return null;
+                    }
                 }
             }else{
                 String[] splitedElementSting=elementString.split("\"");
                 if(splitedElementSting.length>5) {
                     elementURIList=Arrays.asList(splitedElementSting[1],splitedElementSting[7]);
                 }
-
             }
             return elementURIList;
         }).collect(Collectors.toList());
