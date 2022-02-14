@@ -55,6 +55,7 @@ public class CoupangRequest extends RequestTemplate {
         List<CoupangJSON_6> coupangBannerList = getBannerList(coupangJson);
         List<ModusaleAppData> coupangAppDataList=new ArrayList<>();
 
+        if (coupangBannerList==null)return coupangAppDataList;
         for(CoupangJSON_6 banner:coupangBannerList){
             String monthBannerScheme=banner.getScheme();
             List<CoupangImageJSON_2> monthlyItems = getMonthlyMenu(banner, monthBannerScheme);
@@ -110,6 +111,7 @@ public class CoupangRequest extends RequestTemplate {
         LinkedHashMap<String, String> imageBannerMap=new LinkedHashMap<>();
         CoupangJSON_1 coupangJson= modusaleRequest.syncDataFrom(this.URL,this.header,CoupangJSON_1.class);
         List<CoupangJSON_6> coupangBannerList= getBannerList(coupangJson);
+        if(coupangBannerList==null)return imageBannerMap;
         for(CoupangJSON_6 banner:coupangBannerList){
             String monthBannerScheme=banner.getScheme();
             List<CoupangImageJSON_2> monthlyMenu = getMonthlyMenu(banner,monthBannerScheme);
@@ -128,7 +130,13 @@ public class CoupangRequest extends RequestTemplate {
     }
 
     private List<CoupangJSON_6> getBannerList(CoupangJSON_1 coupangJson){
-        return coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
+        try {
+            return coupangJson.getData().getEntityList().get(0).getEntity().getData().getList();
+        }catch (Exception e){
+            //배너리스트가 없는 경우
+            return null;
+        }
+
     }
 
     private List<CoupangImageJSON_2> getMonthlyMenu(CoupangJSON_6 banner,String monthBannerScheme){
@@ -139,9 +147,11 @@ public class CoupangRequest extends RequestTemplate {
         if(monthBannerScheme.length()>0){
             String imgURL;
             try {
+                System.out.println(banner);
                 imgURL=URLDecoder.decode(banner.getScheme().split("=")[1],StandardCharsets.US_ASCII);
             }catch (Exception e){
-                telegramAPI.send(e.getMessage());
+                //등호가 없는 경우
+                //차피 배너가 없기에 null처리 해도 됨
                 return null;
             }
 
