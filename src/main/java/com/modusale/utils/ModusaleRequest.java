@@ -82,7 +82,7 @@ public class ModusaleRequest {
                 .get()
                 .uri(uriBuilderFactory.builder().build())
                 .headers(h -> {
-                    h.setCacheControl(CacheControl.noStore());//캐시 저장 안하도록 수정
+                    h.add("Cache-Control","no-cache, no-store, max-age=0, must-revalidate");
                     if (headers != null) {
                         for (String a : headers.keySet()) {
                             h.add(a, headers.get(a));
