@@ -16,14 +16,15 @@ import java.util.*;
 public class CoupangRequest extends RequestTemplate {
 
     final String alertMsg="*********************\n";
+    private Map<String,List<String>> itemFromGithub;
     private final String URL;
     private final Map<String,String> header;
     private final ModusaleMapper modusaleMapper;
     private final ModusaleRequest modusaleRequest;
     private final TelegramAPI telegramAPI;
-    private final Map<String,List<String>> itemFromGithub;
     private final Map<String,List<String>> monthlyItemFromGithub;
     private final List<String> imageListFromGithub;
+    private final GitHubData gitHubData;
 
     public CoupangRequest(TelegramAPI telegramAPI, GitHubData gitHubData, ModusaleMapper modusaleMapper,
                           ModusaleRequest modusaleRequest, CoupangProperty coupangProperty){
@@ -35,6 +36,7 @@ public class CoupangRequest extends RequestTemplate {
         this.itemFromGithub=gitHubData.getCoupangItemMap();
         this.monthlyItemFromGithub= gitHubData.getCoupangMonthlyMap();
         this.imageListFromGithub = gitHubData.getCoupangImageList();
+        this.gitHubData=gitHubData;
     }
 
     public List<ModusaleAppData> getAppDataBy(GpsData gps){
@@ -47,6 +49,7 @@ public class CoupangRequest extends RequestTemplate {
 
     public List<ModusaleAppData> getAppData(){
         CoupangJSON_1 coupangJson= modusaleRequest.syncDataFrom(this.URL,this.header,CoupangJSON_1.class);
+        itemFromGithub=gitHubData.getCoupangItemMap();
         List<ModusaleAppData> parsedDataList = getDataFrom(coupangJson);
         return removeDup(parsedDataList);
     }
@@ -147,7 +150,6 @@ public class CoupangRequest extends RequestTemplate {
         if(monthBannerScheme.length()>0){
             String imgURL;
             try {
-                System.out.println(banner);
                 imgURL=URLDecoder.decode(banner.getScheme().split("=")[1],StandardCharsets.US_ASCII);
             }catch (Exception e){
                 //등호가 없는 경우
