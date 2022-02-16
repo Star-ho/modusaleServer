@@ -56,5 +56,14 @@ public class MainController {
 
     @GetMapping("/todaySale")
     public String todaySale(){return todayService.showTodaySale(); }
+
+    @GetMapping("/policy")
+    public String policy(){
+        return "할인모아는 위치정보를 수집하여 사용자가 사용 가능한 가게의 정보만 보여줍니다" +
+                "수집한 위치정보를 저장하지 않습니다." +
+                "광고를 위해 개인 광고 정보를 수집하지만 따로저장히자 않습니다." +
+                "개인 광고정보는 adMob에 보냅니다";
+    }
+
 }
 
