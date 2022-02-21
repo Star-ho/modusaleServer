@@ -17,13 +17,13 @@ public class CoupangRequest extends RequestTemplate {
 
     final String alertMsg="*********************\n";
     private Map<String,List<String>> itemFromGithub;
+    private List<String> imageListFromGithub;
+    private Map<String,List<String>> monthlyItemFromGithub;
     private final String URL;
     private final Map<String,String> header;
     private final ModusaleMapper modusaleMapper;
     private final ModusaleRequest modusaleRequest;
     private final TelegramAPI telegramAPI;
-    private final Map<String,List<String>> monthlyItemFromGithub;
-    private final List<String> imageListFromGithub;
     private final GitHubData gitHubData;
 
     public CoupangRequest(TelegramAPI telegramAPI, GitHubData gitHubData, ModusaleMapper modusaleMapper,
@@ -50,6 +50,8 @@ public class CoupangRequest extends RequestTemplate {
     public List<ModusaleAppData> getAppData(){
         CoupangJSON_1 coupangJson= modusaleRequest.syncDataFrom(this.URL,this.header,CoupangJSON_1.class);
         itemFromGithub=gitHubData.getCoupangItemMap();
+        monthlyItemFromGithub=gitHubData.getCoupangMonthlyMap();
+        imageListFromGithub=gitHubData.getCoupangImageList();
         List<ModusaleAppData> parsedDataList = getDataFrom(coupangJson);
         return removeDup(parsedDataList);
     }
