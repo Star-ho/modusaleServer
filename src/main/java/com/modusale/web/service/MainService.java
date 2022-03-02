@@ -1,9 +1,9 @@
 package com.modusale.web.service;
 
-import com.modusale.coupang.CoupangRequest;
+import com.modusale.requests.coupang.CoupangRequest;
 import com.modusale.utils.GpsData;
 import com.modusale.utils.TelegramAPI;
-import com.modusale.yogiyo.YogiyoRequest;
+import com.modusale.requests.yogiyo.YogiyoRequest;
 import com.modusale.utils.AppDataObj;
 import org.springframework.stereotype.Service;
 

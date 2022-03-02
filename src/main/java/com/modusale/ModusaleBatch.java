@@ -1,13 +1,12 @@
 package com.modusale;
 
-import com.modusale.yogiyo.YogiyoRequest;
-import com.modusale.baemin.BaeminRequest;
-import com.modusale.coupang.CoupangRequest;
+import com.modusale.requests.yogiyo.YogiyoRequest;
+import com.modusale.requests.baemin.BaeminRequest;
+import com.modusale.requests.coupang.CoupangRequest;
 import com.modusale.utils.AppDataObj;
 import com.modusale.utils.GitHubData;
 import com.modusale.utils.TelegramAPI;
-import com.modusale.wemefo.WemefoRequest;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import com.modusale.requests.wemefo.WemefoRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
