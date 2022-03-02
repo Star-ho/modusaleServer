@@ -48,7 +48,7 @@ public class ModusaleRequest {
         return null;
     }
 
-    public <T> List<T> asyncSend(List<String> urlList, Class<T> tClass){
+    public <T> List<T> syncSend(List<String> urlList, Class<T> tClass){
         return syncDataListFrom(urlList,null,tClass);
     }
 

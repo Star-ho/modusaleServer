@@ -67,6 +67,6 @@ public class BaeminRequest extends RequestTemplate {
         for(Category category : categories){
             URLList.add(String.format(this.URL, category.getCategory(), page));
         }
-        return modusaleRequest.asyncSend(URLList,BaeminResponseJSON.class);
+        return modusaleRequest.syncSend(URLList,BaeminResponseJSON.class);
     }
 }
