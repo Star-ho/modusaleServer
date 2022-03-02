@@ -1,8 +1,8 @@
 package com.modusale.web.service;
 
 import com.modusale.utils.ImgSourceToHTML;
-import com.modusale.coupang.CoupangRequest;
-import com.modusale.wemefo.WemefoRequest;
+import com.modusale.requests.coupang.CoupangRequest;
+import com.modusale.requests.wemefo.WemefoRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
