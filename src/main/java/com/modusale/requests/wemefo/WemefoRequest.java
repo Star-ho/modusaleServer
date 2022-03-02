@@ -82,8 +82,15 @@ public class WemefoRequest extends ModusaleAppData{
     }
 
     private Elements getPTageElement(String wemefRes){
-        Elements pTag=Jsoup.parse(wemefRes).select("div.view_coupon_desc").select("div div").select("p");//p태그 파싱
-        Elements pTagElement=pTag.get(pTag.size()-2).select("p > *");//p태그 엘리먼트에서 쓸모없는것들 빼기
+        Elements pTag;
+        Elements pTagElement;
+        try {
+            pTag=Jsoup.parse(wemefRes).select("div.view_coupon_desc").select("div div").select("p");//p태그 파싱
+            pTagElement=pTag.get(pTag.size()-2).select("p > *");//p태그 엘리먼트에서 쓸모없는것들 빼기
+        }catch (Exception e){
+            pTag=Jsoup.parse(wemefRes).select("div.view_coupon_desc").select("div").select("p");//p태그 파싱
+            pTagElement=pTag.get(pTag.size()-1).select("p > *");//p태그 엘리먼트에서 쓸모없는것들 빼기
+        }
 
         while(!pTagElement.get(0).toString().contains("data-filename")){//쓸모없는거 날리기
             pTagElement=pTagElement.next();
