@@ -1,6 +1,7 @@
 package com.modusale.requests.baemin;
 
-import com.modusale.baemin.dto.*;
+import com.modusale.aop.alertMessage.Alert;
+import com.modusale.requests.baemin.dto.*;
 import com.modusale.utils.ModusaleRequest;
 import com.modusale.ModusaleAppData;
 import com.modusale.utils.RequestTemplate;
@@ -27,6 +28,7 @@ public class BaeminRequest extends RequestTemplate {
         this.modusaleRequest = modusaleRequest;
     }
 
+    @Alert
     public List<ModusaleAppData> getAppData(){
         List<ModusaleAppData> baeminAppDataList=new ArrayList<>();
         int page=0;

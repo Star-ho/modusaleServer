@@ -2,6 +2,7 @@ package com.modusale.requests.wemefo;
 
 import java.util.*;
 
+import com.modusale.aop.alertMessage.Alert;
 import com.modusale.utils.GitHubData;
 import com.modusale.utils.ModusaleRequest;
 import com.modusale.utils.TelegramAPI;
@@ -33,12 +34,14 @@ public class WemefoRequest extends ModusaleAppData{
         this.telegramAPI=telegramAPI;
     }
 
+    @Alert
     public List<ModusaleAppData> getWemefOData(){
         List<List<String>> itemsFromWeb = getWemefDataFrom();
         Map<String, WemefItem> itemsFromGithub = getGithubWemefItem();
         return mergeData(itemsFromWeb,itemsFromGithub);
     }
 
+    @Alert
     public LinkedHashMap<String,String> getWemefBannerList(){
         LinkedHashMap<String,String> bannerMap=new LinkedHashMap<>();
         List<List<String>> itemsFromWeb =getWemefDataFrom();
@@ -52,6 +55,7 @@ public class WemefoRequest extends ModusaleAppData{
         return bannerMap;
     }
 
+    @Alert
     private List<List<String>> getWemefDataFrom(){
         String wemefURL = getWemefCouponURL();
         String wemefRes= modusaleRequest.syncDataFrom(wemefURL,String.class);

@@ -1,6 +1,7 @@
 package com.modusale.requests.yogiyo;
 
 
+import com.modusale.aop.alertMessage.Alert;
 import com.modusale.utils.GpsData;
 import com.modusale.ModusaleAppData;
 import com.modusale.utils.ModusaleRequest;
@@ -25,12 +26,14 @@ public class YogiyoRequest extends RequestTemplate {
         this.modusaleRequest = modusaleRequest;
     }
 
+    @Alert
     public List<ModusaleAppData> getAppData(){
         List<String> urlList= getUrlList();
         List<YogiyoResponseJSON> responseList=sendTo(urlList);
         return removeDup(getModusaleDataFrom(responseList));
     }
 
+    @Alert
     public List<ModusaleAppData> getAppDataByGps(GpsData gpsData){
         String url = String.format(this.URL,gpsData.getLongitude(),gpsData.getLatitude());
         YogiyoResponseJSON responseList=sendTo(url);

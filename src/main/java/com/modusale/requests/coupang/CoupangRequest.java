@@ -1,6 +1,7 @@
 package com.modusale.requests.coupang;
 
-import com.modusale.coupang.dto.*;
+import com.modusale.aop.alertMessage.Alert;
+import com.modusale.requests.coupang.dto.*;
 import com.modusale.utils.*;
 import com.modusale.utils.properties.CoupangProperty;
 import com.modusale.ModusaleAppData;
@@ -39,6 +40,7 @@ public class CoupangRequest extends RequestTemplate {
         this.gitHubData=gitHubData;
     }
 
+    @Alert
     public List<ModusaleAppData> getAppDataBy(GpsData gps){
         Map<String, String> gpsHeader = new HashMap<>(this.header);
         gpsHeader.put("X-EATS-LOCATION", "{\"addressId\":0,\"latitude\":"+gps.getLatitude()+",\"longitude\":"+gps.getLongitude()+",\"regionId\":10,\"siDo\":\"%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C\",\"siGunGu\":\"%EC%A4%91%EA%B5%AC\"}");
@@ -47,6 +49,7 @@ public class CoupangRequest extends RequestTemplate {
         return removeDup(parsedDataList);
     }
 
+    @Alert
     public List<ModusaleAppData> getAppData(){
         CoupangJSON_1 coupangJson= modusaleRequest.syncDataFrom(this.URL,this.header,CoupangJSON_1.class);
         itemFromGithub=gitHubData.getCoupangItemMap();
