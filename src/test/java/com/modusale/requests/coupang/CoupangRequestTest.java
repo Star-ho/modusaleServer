@@ -1,9 +1,9 @@
-package com.modusale.coupang;
+package com.modusale.requests.coupang;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.modusale.coupang.dto.CoupangJSON_1;
+import com.modusale.requests.coupang.dto.CoupangJSON_1;
 import com.modusale.utils.*;
 import com.modusale.utils.properties.CoupangProperty;
 import org.junit.jupiter.api.Test;

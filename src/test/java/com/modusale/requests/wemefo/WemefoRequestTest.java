@@ -1,4 +1,4 @@
-package com.modusale.wemefo;
+package com.modusale.requests.wemefo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -9,7 +9,7 @@ import com.modusale.utils.ModusaleRequest;
 import com.modusale.utils.TelegramAPI;
 import com.modusale.utils.properties.GithubProperty;
 import com.modusale.utils.properties.WemefoProperty;
-import com.modusale.wemefo.dto.WemefMainJSON;
+import com.modusale.requests.wemefo.dto.WemefMainJSON;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -61,8 +61,8 @@ class WemefoRequestTest {
                 .thenReturn(githubResponse);
 
         gitHubData=new GitHubData(appDataObj,modusaleRequest,githubProperty);
-
     }
+
     @Test
     public void wemefoTest() {
         WemefoRequest wemefoRequest=new WemefoRequest(wemefoProperty, modusaleRequest,gitHubData,telegramAPI);
@@ -86,7 +86,6 @@ class WemefoRequestTest {
         var wemefOData = wemefoRequest.getWemefBannerList();
 
         assertEquals(35,wemefOData.size());
-
     }
 
 }

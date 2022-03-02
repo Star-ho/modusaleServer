@@ -1,4 +1,4 @@
-package com.modusale.yogiyo;
+package com.modusale.requests.yogiyo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.modusale.utils.GpsData;
 import com.modusale.utils.ModusaleRequest;
 import com.modusale.utils.properties.YogiyoProperty;
-import com.modusale.yogiyo.dto.YogiyoResponseJSON;
+import com.modusale.requests.yogiyo.dto.YogiyoResponseJSON;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
